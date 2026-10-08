@@ -23,7 +23,7 @@ Pentru starea curentă, domenii și fluxul de publicare, vezi [ONLINE-SINCRONIZA
 
 ## Bundle Git local
 
-Bundle-ul Git de recuperare este la `D:\AI\Codex\ȘantierSync\Backups\SantierSync-2026-10-08.bundle`. Se actualizează după salvarea acestor documente cu istoricul complet, branch-urile și tag-urile curente. Bundle-ul păstrează codul și documentația, nu datasetul CMS și nici secretele sau `node_modules`; backupul Sanity este separat în `D:\AI\Codex\ȘantierSync\Backups\Sanity\`. Bundle-ul local nu este o copie offsite.
+Bundle-ul Git de recuperare este la `D:\AI\Codex\ȘantierSync\Backups\SantierSync-2026-10-08-CMS.bundle`. Se actualizează după salvarea acestor documente cu istoricul complet, branch-urile și tag-urile curente. Bundle-ul păstrează codul și documentația, nu datasetul CMS și nici secretele sau `node_modules`; backupul Sanity este separat în `D:\AI\Codex\ȘantierSync\Backups\Sanity\`. Bundle-ul local nu este o copie offsite.
 
 ## Cum lucrăm mai departe
 
