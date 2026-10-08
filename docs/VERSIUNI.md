@@ -9,9 +9,13 @@ Aceste repere sunt pentru a putea compara variantele fără să folosești comen
 
 ## Sincronizare online
 
-La 8 octombrie 2026, repository-ul public SantierSyncR de pe GitHub este încă gol. Codul și tag-ul `v0.2-design-referinta` nu au fost încărcate acolo: contul GitHub conectat raportează că nu are drept de push, iar Git din terminal nu are credențiale disponibile. Încercarea de push fără autentificare a eșuat. Așadar, versiunea online nu este sincronizată cu cea locală.
+La 8 octombrie 2026, repository-ul public SantierSyncR de pe GitHub este încă nesincronizat; push-ul nu a fost făcut. Autentificarea prin browser/Git Credential Manager a reușit, iar autentificarea Vercel CLI confirmă contul `adriancomann`, echipa `coman-family` și planul Hobby. Proiectul Vercel SantierSyncR urmează să fie configurat. Nu au fost puse coduri OAuth ori URL-uri de autorizare în fișiere.
 
-Există un bundle Git recuperabil la `D:\AI\Codex\ȘantierSync\Backups\SantierSync-2026-10-08.bundle`, verificat pentru checkpointul `d80f477`. Acesta este o copie locală separată a codului comis, istoricului și tag-ului; nu include fișiere `.env` sau `node_modules` și nu este o copie în afara calculatorului.
+Există un bundle Git recuperabil la `D:\AI\Codex\ȘantierSync\Backups\SantierSync-2026-10-08.bundle`, verificat pentru tag-ul `v0.2-design-referinta` (`d80f477`) și checkpointul de documentație `a59`. Acesta este o copie locală separată; nu include fișiere `.env` sau `node_modules` și nu este o copie în afara calculatorului.
+
+Etapa de hosting aleasă pentru demo-ul personal este Vercel Hobby; când proiectul se apropie de utilizarea cu clienți, proprietarul va reevalua trecerea la Pro. Setarea intenționată este descrisă în `VERCEL-DEMO.md`, dar deploy-ul nu este încă confirmat. Demo-ul păstrează copy-ul homepage-ului, `noindex`, răspuns 404 pentru paginile juridice draft, `mailto` activ și API-ul dezactivat.
+
+După confirmarea build-ului demo, este planificat un reper nou cu tag-ul `v0.3-demo-vercel`. Tag-ul nu este încă creat.
 
 ## Cum lucrăm mai departe
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { legalConfig, legalDraftNotice } from "@/content/legal.ro";
 import { siteConfig } from "@/config/site";
 
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 };
 
 export default function InformatiiLegalePage() {
+  if (siteConfig.deploymentStage === "demo") notFound();
+
   return (
     <main id="continut" tabIndex={-1}>
       <article className="container legal-page">

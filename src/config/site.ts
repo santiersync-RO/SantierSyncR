@@ -1,5 +1,9 @@
 const env = process.env;
 
+const configuredStage = env.DEPLOYMENT_STAGE?.trim().toLowerCase() || "live";
+const deploymentStage = configuredStage === "demo" ? "demo" : "live";
+const stageIsValid = configuredStage === "demo" || configuredStage === "live";
+
 function isTrue(value: string | undefined): boolean {
   return value?.trim().toLowerCase() === "true";
 }
@@ -63,6 +67,8 @@ const legalReady =
   isTrue(env.LEGAL_REVIEWED);
 
 const releaseReady =
+  stageIsValid &&
+  deploymentStage === "live" &&
   env.VERCEL_ENV === "production" &&
   isTrue(env.RELEASE_APPROVED) &&
   legalReady;
@@ -82,6 +88,8 @@ const fromEmail = env.CONTACT_FROM_EMAIL?.trim().toLowerCase() ?? "";
 const fromDomain = fromEmail.split("@").at(-1) ?? "";
 
 const contactConfigReady =
+  stageIsValid &&
+  deploymentStage === "live" &&
   isTrue(env.CONTACT_ENABLED) &&
   isTrue(env.NEXT_PUBLIC_CONTACT_ENABLED) &&
   legalReady &&
@@ -112,6 +120,7 @@ export const siteConfig = {
   location: "Cluj și împrejurimi",
   siteUrl,
   canonicalOrigin: expectedOrigin,
+  deploymentStage,
   releaseReady,
   legalReady,
   contactEnabled: contactConfigReady,

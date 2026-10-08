@@ -6,6 +6,7 @@ const env = process.env;
 const productionCheck = env.VERCEL_ENV === "production" || env.CHECK_PRODUCTION === "true";
 const failures = [];
 const isTrue = (value) => value?.trim().toLowerCase() === "true";
+const isFalse = (value) => value?.trim().toLowerCase() === "false";
 const hasValue = (name) => Boolean(env[name]?.trim());
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value ?? "");
 const isPlaceholder = (value) =>
@@ -14,6 +15,32 @@ const isPlaceholder = (value) =>
 if (!productionCheck) {
   console.log("Verificare de lansare omisă: mediul nu este setat pentru producție.");
   process.exit(0);
+}
+
+const deploymentStage = env.DEPLOYMENT_STAGE?.trim().toLowerCase() || "live";
+if (!new Set(["demo", "live"]).has(deploymentStage)) {
+  failures.push("DEPLOYMENT_STAGE trebuie să fie demo sau live (gol păstrează verificările stricte live).");
+}
+
+if (deploymentStage === "demo") {
+  if (env.SITE_URL?.trim() !== "https://santiersync.ro") {
+    failures.push("Pentru demo, SITE_URL trebuie să fie exact https://santiersync.ro.");
+  }
+  for (const name of ["CONTACT_ENABLED", "NEXT_PUBLIC_CONTACT_ENABLED"]) {
+    if (!isFalse(env[name])) failures.push(`${name} trebuie setat explicit la false în etapa demo.`);
+  }
+  if (failures.length) {
+    console.error("Configurarea pentru demo este blocată:");
+    for (const failure of failures) console.error(`- ${failure}`);
+    process.exit(1);
+  }
+  console.log("Configurația tehnică pentru demo a trecut. Acest rezultat nu confirmă eligibilitatea planului de hosting, DNS-ul sau verificarea manuală.");
+  process.exit(0);
+}
+
+if (deploymentStage !== "live") {
+  console.error("Publicarea live este blocată: DEPLOYMENT_STAGE nu este valid.");
+  process.exit(1);
 }
 
 if (env.SITE_URL?.trim() !== "https://santiersync.ro") {
