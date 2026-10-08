@@ -2,9 +2,13 @@
 
 ## Situația de acum
 
-Codul de referință este salvat local în checkpointul `v0.2-design-referinta` (`d80f477`). Repository-ul public [SantierSyncR pe GitHub](https://github.com/santiersync-RO/SantierSyncR) este încă nesincronizat; push-ul nu a fost făcut. Autentificarea prin browser/Git Credential Manager și Vercel CLI a reușit. Vercel CLI confirmă contul `adriancomann`, echipa `coman-family` și planul Hobby. Proiectul Vercel SantierSyncR urmează să fie creat/configurat; site-ul nu este încă găzduit public. Nu au fost salvate coduri OAuth sau URL-uri de autorizare în repository.
+Codul este sincronizat pe repository-ul public [SantierSyncR pe GitHub](https://github.com/santiersync-RO/SantierSyncR), în branch-urile `main` și `feat/website-mvp`. Reperele sunt `v0.2-design-referinta` (`d80f477`), `v0.3-demo-vercel` (`cb0054a`) și `v0.3.1-demo-publicat` (`2badb64`, sursa deploy-ului curent). Actualizările ulterioare ale documentației nu schimbă codul demo-ului publicat.
 
-Există o copie Git locală separată la `D:\AI\Codex\ȘantierSync\Backups\SantierSync-2026-10-08.bundle`, verificată pentru checkpointul `d80f477`. Bundle-ul păstrează istoricul comis și tag-ul, dar nu include `.env`, secrete sau dependențele `node_modules`. Fișierul este tot pe acest calculator, deci nu este backup offsite.
+Demo-ul este publicat cu status **Ready** pe proiectul Vercel `santiersync`, în echipa `coman-family` (plan Hobby). [URL stabil](https://santiersync.vercel.app) · [deploy-ul curent](https://santiersync-mlmao3k8w-coman-family.vercel.app) · [dashboard](https://vercel.com/coman-family/santiersync). Build-ul cloud a trecut, inclusiv TypeScript. Domeniul `santiersync.ro` este adăugat la proiect, dar DNS-ul public este încă NXDOMAIN, iar nameserverele nu sunt configurate; Vercel cere `ns1.vercel-dns.com` și `ns2.vercel-dns.com`. Aliasul de producție `.ro` încă nu este atașat la deploy; după DNS va trebui atașat sau făcut un redeploy. HTTPS și servirea prin `.ro` nu sunt confirmate.
+
+Autentificarea GitHub și Vercel este pregătită. Conectarea Git a primit eroarea API 400: integrarea GitHub necesară nu este instalată. Vercel cere proprietarul repository-ului personal pentru conectare, împreună cu aplicația GitHub autorizată ([Vercel for GitHub](https://vercel.com/docs/git/vercel-for-github), [instalarea aplicației](https://github.com/apps/vercel)). Proprietarul încă decide între păstrarea repository-ului cu publicări controlate, configurarea Vercel prin contul proprietar `santiersync-RO` sau transferul repository-ului către `adriancomann`; deploy-urile automate nu sunt active.
+
+Există o copie Git locală separată la `D:\AI\Codex\ȘantierSync\Backups\SantierSync-2026-10-08.bundle`. Bundle-ul se recreează și se verifică după salvarea checkpointului și a documentației; păstrează istoricul comis și tag-urile, fără `.env`, secrete sau `node_modules`. Fișierul este tot pe acest calculator, deci nu este backup offsite.
 
 ## Opțiuni de găzduire
 
@@ -14,27 +18,25 @@ Există o copie Git locală separată la `D:\AI\Codex\ȘantierSync\Backups\Santi
 | **Vercel Pro** | Potrivirea cea mai directă pentru proiectul actual Next.js: păstrează API Route Handler-ul viitor, `next/image` și ruta OG fără adaptare de platformă. Pagina oficială afișează **20 USD/lună**, cu un credit de 20 USD pentru utilizare; taxele și consumul peste credit pot adăuga cost. Poate fi opțiunea potrivită dacă Vercel confirmă că site-ul agenției este utilizare comercială. Verifică [Vercel Pricing](https://vercel.com/pricing). | Conectat la GitHub, generează deploy-uri preview pentru schimbările din branch/PR și actualizează domeniul de producție doar pentru branch-ul ales ca production. Vezi [Vercel pentru GitHub](https://vercel.com/docs/git/vercel-for-github). |
 | **Cloudflare Pages Free** | Poate reduce costul lunar dacă site-ul rămâne static. Proiectul actual ar cere adaptare: ruta API nefolosită trebuie scoasă sau tratată separat, iar optimizarea imaginilor Next trebuie configurată pentru hosting static. Cloudflare documentează, între altele, 500 build-uri/lună și maximum 20.000 fișiere pe planul Free; verifică [limitele curente](https://developers.cloudflare.com/pages/platform/limits/). | Are deploy-uri preview și aliasuri pentru branch-uri/PR-uri GitHub; consultă [preview deployments](https://developers.cloudflare.com/pages/configuration/preview-deployments/). Domeniul de producție rămâne separat de preview-urile de branch. |
 
-**Decizia actuală:** pentru etapa personală de învățare și demo se dorește Vercel Hobby. Când site-ul se apropie de folosirea cu clienți sau promovarea comercială a serviciilor, proprietarul va reevalua eligibilitatea și va trece la Vercel Pro dacă este necesar. Aceasta este intenția de hosting, nu o confirmare că termenii Hobby permit utilizarea comercială și nici că un deploy a avut loc. RoTLD este registrul domeniilor `.ro`, nu furnizorul de hosting. Contul Cloudflare asociat domeniului `.com` nu înseamnă că DNS-ul `.ro` ori hostingul sunt configurate.
+**Decizia actuală:** Vercel Hobby este folosit pentru demo-ul personal; înainte de folosirea cu clienți sau promovarea comercială, proprietarul va reevalua termenii și va trece la Pro dacă este necesar. RoTLD este registrul domeniului `.ro`; nameserverele cerute trebuie setate în contul RoTLD. Contul Cloudflare al `.com` nu configurează automat DNS-ul `.ro`.
 
-Configurația pentru demo este descrisă în [VERCEL-DEMO.md](VERCEL-DEMO.md): `DEPLOYMENT_STAGE=demo`, URL-ul canonic și ambele setări contact false, pentru Preview și Production. Demo-ul nu schimbă copy-ul homepage-ului; păstrează `noindex`, ascunde paginile juridice draft cu 404, lasă activ doar formularul `mailto` și ține API-ul dezactivat. Aceste setări nu confirmă eligibilitatea planului, DNS-ul sau verificarea manuală. Cloudflare Pages Free rămâne alternativă numai dacă se dorește adaptarea proiectului static.
+Configurația pentru demo este descrisă în [VERCEL-DEMO.md](VERCEL-DEMO.md): cele patru variabile demo sunt setate pentru Production și Preview. Homepage-ul își păstrează copy-ul; demo-ul rămâne `noindex`, rutele juridice draft răspund cu 404, formularul `mailto` este activ, iar API-ul este dezactivat. Verificarea manuală a interfeței aparține proprietarului și nu a fost încă făcută.
 
 ## Pașii pentru sincronizare și domeniu
 
-1. Autentificarea GitHub prin browser/Git Credential Manager este pregătită; următorul pas este push-ul autorizat și confirmarea că tag-ul apare pe remote. Nu trimite parole, tokenuri, coduri OAuth sau URL-uri de autorizare în conversație ori repository.
-2. După ce push-ul este autorizat, se urcă checkpointul curent pe GitHub și se confirmă că tag-ul `v0.2-design-referinta` este vizibil acolo. Până la confirmarea acelei operații, repository-ul online rămâne gol.
-3. După sincronizarea repository-ului, se creează/configurează proiectul SantierSyncR în Vercel și variabilele demo descrise în ghid; apoi se verifică întâi URL-ul temporar Vercel. Proiectul Vercel, deploy-ul demo și configurarea DNS sunt încă în așteptare. Push-urile la branch-uri de design și PR-uri pot crea preview-uri.
-4. Proprietarul verifică manual pe preview textul, aspectul desktop/mobil și legăturile. Testarea manuală rămâne la proprietar; un build reușit nu confirmă aspectul vizual sau funcționarea domeniului.
-5. După ce designul este acceptat, proprietarul alege branch-ul de producție (de regulă `main`). Deploy-ul la domeniul public trebuie legat numai de acel branch; branch-urile de lucru rămân preview-uri.
-6. Pentru domeniul `.ro`, trebuie cunoscute registrarul și persoana cu acces la DNS, apoi aplicate exact înregistrările cerute de furnizorul ales. Domeniile `santiersync.ro` și `.com` sunt confirmate ca nume cumpărate; codul nu presupune că DNS-ul sau HTTPS-ul sunt deja configurate. Domeniul `.com` poate redirecționa spre `.ro` după configurare.
-7. Publicarea rămâne blocată până când proprietarul completează și aprobă datele operatorului, informările juridice și variabilele de lansare cerute de release gate. Nu pune secrete sau date `.env` în GitHub.
+1. Proprietarul decide politica repo/cont Vercel; integrarea Git Vercel necesită ca owner-ul repository-ului să instaleze Vercel GitHub App. Până la acea alegere, nu se presupun deploy-uri automate la push.
+2. Pentru domeniul `.ro`, setează în RoTLD nameserverele `ns1.vercel-dns.com` și `ns2.vercel-dns.com`, apoi așteaptă propagarea și verifică DNS/HTTPS. Domeniul este adăugat proiectului, dar acum răspunde NXDOMAIN.
+3. Proprietarul verifică manual UI-ul pe [URL-ul stabil de demo](https://santiersync.vercel.app), inclusiv desktop/mobil, text, linkuri și comportamentul formularului. Această verificare nu a fost încă efectuată.
+4. Demo-ul este online pe `vercel.app`, dar lansarea comercială/live rămâne separată și blocată până la completarea și aprobarea datelor operatorului și informărilor reale, plus reevaluarea planului Vercel.
 
 ## Cum se leagă localul, GitHub și site-ul
 
 - **Local:** copia de pe acest calculator, unde se editează și se verifică schimbările.
-- **GitHub:** istoricul și copia la distanță; devine sincronizată numai după un push autorizat.
-- **Preview:** o versiune online temporară construită dintr-un commit de branch sau PR.
-- **Producție:** domeniul public, legat de branch-ul pe care proprietarul îl alege.
+- **GitHub:** repository-ul sincronizat; cele două branch-uri de lucru menționate mai sus indică același commit curent.
+- **Demo Vercel:** deploy-ul `vercel.app` este online, fără integrare Git automată.
+- **Domeniul `.ro`:** adăugat în proiect, încă nefuncțional până la configurarea nameserverelor și propagarea DNS.
+- **Live comercial:** etapă separată, cu release gate și plan de hosting reevaluate înainte de clienți.
 
-După sincronizare, localul și online-ul corespund când localul a preluat commitul dorit. O editare locală nu modifică site-ul live. Publicarea live se face numai după push/merge către branch-ul de producție și confirmarea deploy-ului.
+O editare locală sau un push în GitHub nu modifică automat demo-ul online în configurația actuală. Publicarea curentă se face explicit prin Vercel CLI, din versiunea salvată în GitHub, după verificarea manuală de către proprietar. Dacă integrarea Git este activată ulterior, `main` poate deveni branch-ul de producție, iar branch-urile de lucru pot primi preview-uri.
 
 Pentru întoarcere sau comparație poți cere în chat: „revino la `v0.2-design-referinta`” sau „compară designul nou cu `v0.2-design-referinta`”. Nu trebuie să folosești terminalul. Bundle-ul local este o recuperare suplimentară, nu o copie externă.

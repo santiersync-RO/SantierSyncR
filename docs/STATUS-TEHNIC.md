@@ -1,6 +1,6 @@
 # Status tehnic — 8 octombrie 2026
 
-Versiunea locală este pregătită pentru prima rundă de feedback a proprietarului. Domeniul principal ales este santiersync.ro; DNS-ul și deploy-ul nu sunt raportate drept configurate. Decizia pentru etapa personală de învățare este Vercel Hobby; înainte de folosirea cu clienți se va reevalua Pro. Autentificarea browser/Git Credential Manager și Vercel CLI este reușită pentru contul `adriancomann`, echipa `coman-family`; push-ul GitHub și proiectul Vercel SantierSyncR sunt următorii pași, încă neefectuați.
+Demo-ul personal este online și Ready în Vercel Hobby, echipa `coman-family`, la https://santiersync.vercel.app. Domeniul principal ales este santiersync.ro, dar DNS public este NXDOMAIN și HTTPS pe domeniu nu este confirmat. Repository-ul GitHub este sincronizat; integrarea Git pentru deploy automat rămâne în așteptarea instalării Vercel GitHub App și a deciziei proprietarului despre cont/politica publicării.
 
 ## Implementat
 
@@ -13,10 +13,13 @@ Versiunea locală este pregătită pentru prima rundă de feedback a proprietaru
 - Pagini juridice de lucru, metadate, imagine pentru distribuirea linkului, robots/sitemap condiționate de aprobarea lansării, 404 și headers de securitate.
 - Control de build care blochează producția incomplet configurată și documentație de configurare/testare manuală.
 - Etapa de demo poate fi selectată explicit prin `DEPLOYMENT_STAGE=demo`: păstrează textul homepage-ului, `noindex`, 404 pentru paginile juridice draft, `mailto` activ și API-ul dezactivat. Setările ghidate sunt pentru Preview și Production; acest gate tehnic nu validează planul hostingului, DNS-ul sau verificarea manuală.
+- Demo-ul Vercel este pe [URL stabil](https://santiersync.vercel.app), deploy-ul [curent](https://santiersync-mlmao3k8w-coman-family.vercel.app), [dashboard](https://vercel.com/coman-family/santiersync). Cele patru variabile de demo sunt setate pe Preview și Production; Node 24, `npm ci` și `npm run build` sunt configurate. Build-ul cloud și TypeScript au trecut.
+- `santiersync.ro` este adăugat în Vercel; sunt necesare nameserverele `ns1.vercel-dns.com` și `ns2.vercel-dns.com` la RoTLD. DNS-ul public este încă NXDOMAIN, iar aliasul de producție `.ro` încă nu este atașat deploy-ului; după DNS va trebui atașat sau făcut redeploy.
+- Domeniul comercial/live rămâne separat de demo și necesită date reale și aprobări legale, plus reevaluarea planului înainte de folosirea cu clienți.
 
 ## Verificări automate executate
 
-- `npm run lint`, `npm run typecheck` și `npm run build`: trec pentru codul curent, inclusiv build-ul demo după reluarea cu permisiunea necesară în Windows.
+- `npm run lint`, `npm run typecheck` și `npm run build`: trec pentru codul curent, inclusiv build-ul cloud Vercel și TypeScript.
 - Controlul lansării a trecut patru probe automate în procese separate, cu configurații temporare; probele sunt distincte de build și nu reprezintă aprobarea unei publicări.
 - `npm audit --omit=dev`: nicio vulnerabilitate raportată în dependențele de producție la momentul verificării.
 
@@ -24,7 +27,7 @@ Auditul complet raportează cinci alerte high în lanțul de instrumente de dezv
 
 ## Verificări care aparțin proprietarului
 
-Testarea vizuală și manuală a redesignului nu a fost efectuată de orchestrator sau de subagenți. Începe cu secțiunea „Prima rundă — versiunea locală” din `TESTARE-MANUALA.md`; restul checklistului aparține etapelor ulterioare. Scoruri Lighthouse, probe pe telefoane și testarea cititorului de ecran nu sunt declarate ca verificate.
+Testarea vizuală/manuală a demo-ului nu a fost efectuată; aparține proprietarului și se poate face la https://santiersync.vercel.app. Începe cu secțiunea „Prima rundă — versiunea locală” din `TESTARE-MANUALA.md`; restul checklistului aparține etapelor ulterioare. Scoruri Lighthouse, probe pe telefoane și testarea cititorului de ecran nu sunt declarate ca verificate.
 
 Linkul `mailto:` doar deschide un mesaj în aplicația vizitatorului. Confirmarea unei livrări reale nu este raportată acum. Endpointul API, Turnstile, Resend și WAF rămân pentru o integrare viitoare, care nu este activată în homepage.
 
