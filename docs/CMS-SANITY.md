@@ -10,6 +10,8 @@ Site-ul folosește un singur document Sanity pentru textele publice, formular, S
 
 ID-ul aplicației Studio publicate este `g9tmzbgatl7rbaw15k97672f`.
 
+Adresa Studio redirecționează normal la `https://www.sanity.io/@o2aoecxqi/studio/g9tmzbgatl7rbaw15k97672f`. Website-ul permite previzualizarea în iframe din această origine oficială, configurată prin `SANITY_STUDIO_URL`. Sanity permite deja CORS cu credențiale pentru propria platformă; nu s-a adăugat o permisiune CORS suplimentară pentru întregul domeniu `www.sanity.io`.
+
 ## Editare rapidă
 
 1. Deschide [Studio-ul ȘantierSync](https://santiersync-ro.sanity.studio) și autentifică-te cu Google folosind contul autorizat pentru proiect.
