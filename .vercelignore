@@ -4,6 +4,7 @@
 
 # Dependențe, artefacte și metadata de versiune locală.
 node_modules
+studio
 .next
 .git
 .vercel

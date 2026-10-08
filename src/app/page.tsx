@@ -1,5 +1,6 @@
 import ContactForm from "@/components/ContactForm";
-import { homeCopy } from "@/content/home.ro";
+import { draftMode } from "next/headers";
+import { getDraftSiteContent, getSiteContent } from "@/lib/sanity.server";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import styles from "./home.module.css";
@@ -40,7 +41,11 @@ function SectionMarker({ number, label }: { number: string; label: string }) {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const draft = await draftMode();
+  const content = await (draft.isEnabled ? getDraftSiteContent() : getSiteContent());
+  const homeCopy = content.home;
+
   return (
     <main id="continut" tabIndex={-1}>
       <section className={styles.hero} id="acasa" aria-labelledby="hero-title">
@@ -225,7 +230,7 @@ export default function HomePage() {
             <p className={styles.contactNote}><i aria-hidden="true" />{homeCopy.contactIntro.note}</p>
           </div>
           <div className={styles.formWrap}>
-            <ContactForm />
+            <ContactForm copy={content.contactForm} recipientEmail={homeCopy.contactIntro.email} />
           </div>
         </div>
       </section>

@@ -43,6 +43,23 @@
   top: -26.2px;
 }
 
+.logoContain {
+  display: flex;
+  width: 155px;
+  height: 36px;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  mix-blend-mode: multiply;
+}
+
+.logoContain img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+
 .slogan,
 .copyright,
 .location,

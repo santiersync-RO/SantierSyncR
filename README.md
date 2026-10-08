@@ -24,6 +24,8 @@ Ghidurile de configurare și de testare sunt în [docs/CONFIGURARE.md](docs/CONF
 
 ## Versiuni locale
 
+Conținutul public se editează din [Sanity Studio](https://santiersync-ro.sanity.studio), fără un deploy nou. Ghidul de editare, previzualizare și backup este în [docs/CMS-SANITY.md](docs/CMS-SANITY.md). Codul și macheta rămân în Git; backupurile conținutului CMS se păstrează separat, local.
+
 Istoricul și regulile de lucru sunt descrise în [docs/VERSIUNI.md](docs/VERSIUNI.md). Textele anterioare redesignului sunt păstrate separat în [arhiva de conținut](docs/versiuni/v0.1-continut-original.md). Reperul `v0.2-design-referinta` salvează codul variantei actuale; nu reprezintă o lansare publică sau validarea manuală.
 
 ## Infrastructură și licențe

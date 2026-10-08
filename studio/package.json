@@ -1,0 +1,29 @@
+{
+  "name": "santiersync-studio",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "sanity": "sanity",
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sanity/client": "8.9.0",
+    "@sanity/cli": "8.15.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "sanity": "6.18.0",
+    "styled-components": "6.5.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}

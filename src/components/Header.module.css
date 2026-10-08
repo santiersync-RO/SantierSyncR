@@ -41,6 +41,23 @@
   top: -37.3px;
 }
 
+.logoContain {
+  display: flex;
+  width: 220px;
+  height: 52px;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  mix-blend-mode: multiply;
+}
+
+.logoContain img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+
 .navigation {
   display: flex;
   align-items: center;
@@ -188,5 +205,9 @@
   .logoCrop {
     transform: scale(0.85);
     transform-origin: left center;
+  }
+
+  .logoContain {
+    width: 188px;
   }
 }

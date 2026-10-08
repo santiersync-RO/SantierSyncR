@@ -3,12 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { siteConfig } from "@/config/site";
+import type { SiteContent } from "@/content/site-content";
 import styles from "./Footer.module.css";
 
 const legalRoutes = new Set(["/confidentialitate", "/informatii-legale"]);
 
-export default function Footer() {
+type FooterProps = {
+  footer: SiteContent["footer"];
+  publicEmail: string;
+  logo: SiteContent["branding"]["logo"];
+};
+
+export default function Footer({ footer, publicEmail, logo }: FooterProps) {
   const pathname = usePathname();
 
   return (
@@ -16,21 +22,22 @@ export default function Footer() {
       <div className={`container ${styles.inner}`}>
         <div className={styles.topRow}>
           <Link className={styles.logo} href="/" aria-label="ȘantierSync — pagina principală">
-            <span className={styles.logoCrop} aria-hidden="true">
+            <span className={logo.originalCrop ? styles.logoCrop : styles.logoContain} aria-hidden="true">
               <Image
-                src="/brand/logo-original.png"
-                alt=""
-                width={1774}
-                height={887}
+                src={logo.url}
+                alt={logo.alt}
+                width={logo.width}
+                height={logo.height}
                 sizes="155px"
+                unoptimized
               />
             </span>
           </Link>
-          <p className={styles.slogan}>Organizare pentru munca din teren.</p>
-          <a className={styles.emailLink} href={`mailto:${siteConfig.publicEmail}`}>
-            {siteConfig.publicEmail}<span aria-hidden="true"> ↗</span>
+          <p className={styles.slogan}>{footer.slogan}</p>
+          <a className={styles.emailLink} href={`mailto:${publicEmail}`}>
+            {publicEmail}<span aria-hidden="true"> ↗</span>
           </a>
-          <p className={styles.copyright}>© 2026 ȘantierSync</p>
+          <p className={styles.copyright}>{footer.copyright}</p>
         </div>
 
         {pathname && legalRoutes.has(pathname) && (
@@ -41,11 +48,11 @@ export default function Footer() {
         )}
 
         <div className={styles.bottomRow}>
-          <p className={styles.location}>CLUJ · ROMÂNIA</p>
+          <p className={styles.location}>{footer.location}</p>
           <Link className={styles.backToTop} href="/#acasa">
-            ÎNAPOI SUS <span aria-hidden="true">↑</span>
+            {footer.backToTop} <span aria-hidden="true">↑</span>
           </Link>
-          <p className={styles.motto}>OMUL RĂMÂNE LA VOLAN.</p>
+          <p className={styles.motto}>{footer.motto}</p>
         </div>
       </div>
     </footer>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import type { SiteContent } from "@/content/site-content";
 import styles from "./ContactForm.module.css";
 
 type ContactValues = {
@@ -12,7 +13,12 @@ type ContactValues = {
 
 const emptyValues: ContactValues = { name: "", email: "", company: "", message: "" };
 
-export default function ContactForm() {
+type ContactFormProps = {
+  copy: SiteContent["contactForm"];
+  recipientEmail: string;
+};
+
+export default function ContactForm({ copy, recipientEmail }: ContactFormProps) {
   const [values, setValues] = useState<ContactValues>(emptyValues);
 
   const update = (field: keyof ContactValues, value: string) => {
@@ -21,29 +27,29 @@ export default function ContactForm() {
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const subject = "Solicitare prin website — ȘantierSync";
+    const subject = copy.emailSubject;
     const body = [
       `Nume: ${values.name.trim()}`,
       `E-mail: ${values.email.trim()}`,
-      `Firmă: ${values.company.trim() || "Nespecificată"}`,
+      `Firmă: ${values.company.trim() || copy.unspecifiedCompany}`,
       "",
-      "Cu ce ne puteți ajuta?",
+      copy.messageHeading,
       values.message.trim(),
     ].join("\n");
 
-    window.location.href = `mailto:santiersync@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   return (
     <form className={styles.form} onSubmit={submit}>
       <div className={styles.topRow}>
         <label className={styles.field} htmlFor="contact-name">
-          <span className={styles.label}>Numele tău</span>
+          <span className={styles.label}>{copy.nameLabel}</span>
           <input
             id="contact-name"
             type="text"
             autoComplete="name"
-            placeholder="Cum să-ți spunem?"
+            placeholder={copy.namePlaceholder}
             maxLength={120}
             value={values.name}
             onChange={(event) => update("name", event.currentTarget.value)}
@@ -52,13 +58,13 @@ export default function ContactForm() {
         </label>
 
         <label className={styles.field} htmlFor="contact-email">
-          <span className={styles.label}>E-mail</span>
+          <span className={styles.label}>{copy.emailLabel}</span>
           <input
             id="contact-email"
             type="email"
             autoComplete="email"
             inputMode="email"
-            placeholder="nume@firma.ro"
+            placeholder={copy.emailPlaceholder}
             maxLength={254}
             value={values.email}
             onChange={(event) => update("email", event.currentTarget.value)}
@@ -68,12 +74,12 @@ export default function ContactForm() {
       </div>
 
       <label className={styles.field} htmlFor="contact-company">
-        <span className={styles.label}>Firmă <span className={styles.optional}>(opțional)</span></span>
+        <span className={styles.label}>{copy.companyLabel} <span className={styles.optional}>{copy.optionalLabel}</span></span>
         <input
           id="contact-company"
           type="text"
           autoComplete="organization"
-          placeholder="Numele firmei"
+          placeholder={copy.companyPlaceholder}
           maxLength={120}
           value={values.company}
           onChange={(event) => update("company", event.currentTarget.value)}
@@ -81,10 +87,10 @@ export default function ContactForm() {
       </label>
 
       <label className={styles.field} htmlFor="contact-message">
-        <span className={styles.label}>Cu ce te putem ajuta?</span>
+        <span className={styles.label}>{copy.messageLabel}</span>
         <textarea
           id="contact-message"
-          placeholder="De exemplu: cum preluați și urmăriți acum cererile de ofertă?"
+          placeholder={copy.messagePlaceholder}
           rows={4}
           maxLength={1500}
           value={values.message}
@@ -94,12 +100,12 @@ export default function ContactForm() {
       </label>
 
       <button className={styles.submit} type="submit">
-        <span>Deschide e-mailul pregătit</span>
+        <span>{copy.submitLabel}</span>
         <span className={styles.arrow} aria-hidden="true">→</span>
       </button>
 
       <p className={styles.note}>
-        Butonul deschide aplicația ta de e-mail cu un mesaj pregătit către santiersync@gmail.com. Datele nu sunt trimise sau stocate de acest site.
+        {copy.noteTemplate.replace("{email}", recipientEmail)}
       </p>
     </form>
   );

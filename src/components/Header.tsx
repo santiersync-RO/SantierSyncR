@@ -3,10 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { homeCopy } from "@/content/home.ro";
+import type { SiteContent } from "@/content/site-content";
 import styles from "./Header.module.css";
 
-export default function Header() {
+type HeaderProps = {
+  navigation: SiteContent["home"]["navigation"];
+  logo: SiteContent["branding"]["logo"];
+};
+
+export default function Header({ navigation, logo }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const menuToggleRef = useRef<HTMLButtonElement>(null);
 
@@ -36,14 +41,15 @@ export default function Header() {
           aria-label="ȘantierSync — pagina principală"
           onClick={closeMenu}
         >
-          <span className={styles.logoCrop} aria-hidden="true">
+          <span className={logo.originalCrop ? styles.logoCrop : styles.logoContain} aria-hidden="true">
             <Image
-              src="/brand/logo-original.png"
-              alt=""
-              width={1774}
-              height={887}
+              src={logo.url}
+              alt={logo.alt}
+              width={logo.width}
+              height={logo.height}
               sizes="220px"
               loading="eager"
+              unoptimized
             />
           </span>
         </Link>
@@ -54,7 +60,7 @@ export default function Header() {
           type="button"
           aria-expanded={open}
           aria-controls="main-navigation"
-          aria-label={open ? homeCopy.navigation.menuClose : homeCopy.navigation.menuOpen}
+          aria-label={open ? navigation.menuClose : navigation.menuOpen}
           onClick={() => setOpen((value) => !value)}
         >
           <span aria-hidden="true" className={styles.menuIcon}>
@@ -62,15 +68,15 @@ export default function Header() {
             <span />
             <span />
           </span>
-          <span>{open ? homeCopy.navigation.close : homeCopy.navigation.menu}</span>
+          <span>{open ? navigation.close : navigation.menu}</span>
         </button>
 
         <nav
           id="main-navigation"
           className={`${styles.navigation} ${open ? styles.navigationOpen : ""}`}
-          aria-label={homeCopy.navigation.label}
+          aria-label={navigation.label}
         >
-          {homeCopy.navigation.links.map(([label, href]) => (
+          {navigation.links.map(({ label, href }) => (
             <Link key={href} href={href} onClick={closeMenu}>
               {label}
             </Link>
@@ -80,7 +86,7 @@ export default function Header() {
             href="/#contact"
             onClick={closeMenu}
           >
-            <span>{homeCopy.navigation.cta}</span>
+            <span>{navigation.cta}</span>
             <span aria-hidden="true">↗</span>
           </Link>
         </nav>
