@@ -7,18 +7,23 @@ const isApprovedProduction =
   process.env.RELEASE_APPROVED === "true" &&
   process.env.LEGAL_REVIEWED === "true";
 
-function trustedStudioOrigin() {
+function trustedStudioAncestors(): string[] | null {
   try {
     const url = new URL(process.env.SANITY_STUDIO_URL || "");
     const isHostedStudio = /^[a-z0-9-]+\.sanity\.studio$/.test(url.hostname);
-    const isSanityDashboardStudio = url.hostname === "www.sanity.io"
-      && /^\/@[a-zA-Z0-9]+\/studio\/[a-z0-9]+\/?$/.test(url.pathname);
-    return url.protocol === "https:" && (isHostedStudio || isSanityDashboardStudio)
-      && url.username === "" && url.password === "" && url.port === ""
-      ? url.origin : null;
+    const isSanityDashboardStudio = (url.hostname === "sanity.io" || url.hostname === "www.sanity.io")
+      && /^\/@[a-zA-Z0-9-]+\/studio\/[a-zA-Z0-9-]+(?:\/.*)?$/.test(url.pathname);
+    if (url.protocol !== "https:" || (!isHostedStudio && !isSanityDashboardStudio)
+      || url.username !== "" || url.password !== "" || url.port !== "" || url.search || url.hash) {
+      return null;
+    }
+
+    return isSanityDashboardStudio
+      ? ["https://sanity.io", "https://www.sanity.io"]
+      : [url.origin];
   } catch { return null; }
 }
-const studioOrigin = trustedStudioOrigin();
+const studioAncestors = trustedStudioAncestors();
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -32,7 +37,7 @@ const nextConfig: NextConfig = {
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          ...(!studioOrigin ? [{ key: "X-Frame-Options", value: "DENY" }] : []),
+          ...(!studioAncestors ? [{ key: "X-Frame-Options", value: "DENY" }] : []),
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=(), payment=()",
@@ -50,7 +55,9 @@ const nextConfig: NextConfig = {
               `base-uri 'self'`,
               `form-action 'self'`,
               `object-src 'none'`,
-              studioOrigin ? `frame-ancestors 'self' ${studioOrigin}` : `frame-ancestors 'none'`,
+              studioAncestors
+                ? `frame-ancestors 'self' ${studioAncestors.join(" ")}`
+                : `frame-ancestors 'none'`,
             ].join("; "),
           },
           ...(!isApprovedProduction

@@ -10,7 +10,7 @@ Site-ul folosește un singur document Sanity pentru textele publice, formular, S
 
 ID-ul aplicației Studio publicate este `g9tmzbgatl7rbaw15k97672f`.
 
-Adresa Studio redirecționează normal la `https://www.sanity.io/@o2aoecxqi/studio/g9tmzbgatl7rbaw15k97672f`. Website-ul permite previzualizarea în iframe din această origine oficială, configurată prin `SANITY_STUDIO_URL`. Sanity permite deja CORS cu credențiale pentru propria platformă; nu s-a adăugat o permisiune CORS suplimentară pentru întregul domeniu `www.sanity.io`.
+Adresa Studio redirecționează normal la `https://www.sanity.io/@o2aoecxqi/studio/g9tmzbgatl7rbaw15k97672f`. Website-ul permite previzualizarea în iframe din originile oficiale exacte `https://sanity.io` și `https://www.sanity.io`, pentru URL-ul de Studio configurat prin `SANITY_STUDIO_URL`. Ambele sunt necesare deoarece interfața autentificată poate folosi adresa fără www. Sanity permite deja CORS cu credențiale pentru propria platformă; nu s-a adăugat o permisiune CORS suplimentară pentru întregul domeniu `www.sanity.io`.
 
 ## Editare rapidă
 
@@ -58,6 +58,6 @@ Backupul inițial a fost exportat aici: [`santiersync-production-20261008-183814
 
 ## Verificare și dependențe
 
-Studio-ul a fost typecheck-uit și construit. Verificarea schemei a găsit zero erori, iar verificările pentru semnătura webhookului și securitatea rutei de draft au trecut. Interfața Studio și pașii Preview/Publish încă așteaptă verificarea manuală în browser.
+Studio-ul a fost typecheck-uit și construit. Verificarea schemei a găsit zero erori, iar verificările pentru semnătura webhookului și securitatea rutei de draft au trecut. Proprietarul a confirmat prin capturi că editorul se deschide. Captura Presentation a identificat blocarea iframe-ului pe originea fără www; versiunea v0.4.2-presentation corectează regula CSP, titlul documentului și asocierea paginii principale. Retestarea manuală Presentation și pașii Publish rămân la proprietar.
 
 Auditul de producție al website-ului raportează zero advisories. Auditul Studio raportează 17 advisories în dependențele tranzitive ale Sanity CLI: 8 moderate și 9 high. Nu s-au aplicat remedieri forțate sau downgrade-uri; dependențele vor fi reevaluate la o actualizare obișnuită a CLI-ului.

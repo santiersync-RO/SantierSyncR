@@ -87,6 +87,12 @@ export default defineType({
     { name: "seo", title: "SEO" },
     { name: "branding", title: "Identitate" },
   ],
+  preview: {
+    prepare: () => ({
+      title: "Pagina principală — ȘantierSync",
+      subtitle: "Textele, contactul și identitatea site-ului",
+    }),
+  },
   fields: [
     defineField({
       name: "home",

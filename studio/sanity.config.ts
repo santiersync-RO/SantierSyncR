@@ -31,12 +31,19 @@ export default defineConfig({
         previewMode: { enable: "/api/draft-mode/enable" },
       },
       resolve: {
+        mainDocuments: [
+          {
+            route: "/",
+            filter: '_id == "siteContent" && _type == "siteContent"',
+            params: {},
+          },
+        ],
         locations: {
           siteContent: {
-            select: { title: "title" },
-            resolve: () => ({
-              locations: [{ title: "Pagina principală", href: "/" }],
-            }),
+            select: { id: "_id" },
+            resolve: (document) => document?.id === "siteContent"
+              ? { locations: [{ title: "Pagina principală — ȘantierSync", href: "/" }] }
+              : null,
           },
         },
       },
