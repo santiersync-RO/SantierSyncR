@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
+const deploymentStage = process.env.DEPLOYMENT_STAGE?.trim().toLowerCase() || "live";
 const isApprovedProduction =
+  deploymentStage === "live" &&
   process.env.VERCEL_ENV === "production" &&
   process.env.RELEASE_APPROVED === "true" &&
   process.env.LEGAL_REVIEWED === "true";

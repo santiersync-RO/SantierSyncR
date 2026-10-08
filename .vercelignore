@@ -1,0 +1,30 @@
+# Configurare locală și secrete; include și .env.example.
+.env*
+.npmrc
+
+# Dependențe, artefacte și metadata de versiune locală.
+node_modules
+.next
+.git
+.vercel
+coverage
+Backups
+*.bundle
+
+# Fișiere locale care pot conține chei, credențiale sau date temporare.
+*.pem
+*.key
+*.p12
+*.pfx
+*.log
+.git-credentials
+credentials*
+secrets*
+*.dump
+*.sql
+*.sqlite
+*.db
+
+# Metadate de sistem.
+.DS_Store
+Thumbs.db
