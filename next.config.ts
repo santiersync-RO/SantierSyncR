@@ -10,7 +10,10 @@ const isApprovedProduction =
 function trustedStudioOrigin() {
   try {
     const url = new URL(process.env.SANITY_STUDIO_URL || "");
-    return url.protocol === "https:" && /^[a-z0-9-]+\.sanity\.studio$/.test(url.hostname)
+    const isHostedStudio = /^[a-z0-9-]+\.sanity\.studio$/.test(url.hostname);
+    const isSanityDashboardStudio = url.hostname === "www.sanity.io"
+      && /^\/@[a-zA-Z0-9]+\/studio\/[a-z0-9]+\/?$/.test(url.pathname);
+    return url.protocol === "https:" && (isHostedStudio || isSanityDashboardStudio)
       && url.username === "" && url.password === "" && url.port === ""
       ? url.origin : null;
   } catch { return null; }
