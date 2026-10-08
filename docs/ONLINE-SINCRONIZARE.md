@@ -4,7 +4,7 @@
 
 Repository-ul public [SantierSyncR pe GitHub](https://github.com/santiersync-RO/SantierSyncR) are CMS-ul în commitul `3f61f9c`, tag `v0.4-sanity-cms`, publicat pe branch-urile `main` și `feat/sanity-cms`. Branch-ul `feat/website-mvp` rămâne checkpointul vechi `15ecadc`; nu este codul CMS curent. Tag-urile precedente `v0.2-design-referinta` (`d80f477`), `v0.3-demo-vercel` (`cb0054a`) și `v0.3.1-demo-publicat` (`2badb64`) rămân disponibile.
 
-Versiunea `v0.4.1-sanity-preview`, commit `303ce15`, este publicată cu status Ready în proiectul Vercel `santiersync`, echipa `coman-family`, la [URL-ul curent](https://santiersync-1hb6wkb9l-coman-family.vercel.app). Domeniul principal este [santiersync.ro](https://santiersync.ro), cu aliasul [santiersync.vercel.app](https://santiersync.vercel.app). HTTPS, HTTP 200, încărcarea conținutului Sanity și protecția webhookului au fost verificate tehnic; verificarea manuală a interfeței rămâne la proprietar. Deploy-ul vechi `2badb64`, publicat ca `v0.3.1-demo-publicat`, este păstrat pentru rollback. Vezi și [dashboard-ul Vercel](https://vercel.com/coman-family/santiersync).
+Versiunea `v0.4.2-presentation`, commit `df35206`, este publicată cu status Ready în proiectul Vercel `santiersync`, echipa `coman-family`, la [URL-ul curent](https://santiersync-i9h4pgtw1-coman-family.vercel.app). Domeniul principal este [santiersync.ro](https://santiersync.ro), cu aliasul [santiersync.vercel.app](https://santiersync.vercel.app). HTTPS, HTTP 200, încărcarea conținutului Sanity și protecția webhookului au fost verificate tehnic; verificarea manuală a interfeței rămâne la proprietar. Deploy-ul vechi `2badb64`, publicat ca `v0.3.1-demo-publicat`, este păstrat pentru rollback. Vezi și [dashboard-ul Vercel](https://vercel.com/coman-family/santiersync).
 
 Deploy-urile automate GitHub–Vercel nu sunt active, deoarece Vercel App nu este conectată la repository. Până la conectarea aplicației de către proprietarul repository-ului, actualizările de cod se publică explicit prin Vercel CLI. Sanity publică textul independent de deploy-ul website-ului: Publish declanșează webhookul de invalidare a cache-ului, iar website-ul încearcă și revalidarea periodică după 60 de secunde, ca rezervă.
 
@@ -25,16 +25,16 @@ Configurația pentru demo este descrisă în [VERCEL-DEMO.md](VERCEL-DEMO.md). M
 ## Pașii pentru sincronizare și domeniu
 
 1. Proprietarul decide politica repo/cont Vercel; integrarea Git Vercel nu a reușit (API 400 la GitHub App) și necesită instalarea aplicației de către proprietarul repository-ului. Nu se presupun deploy-uri automate la push.
-2. Deploy-ul curent are status Ready la [URL-ul său](https://santiersync-1hb6wkb9l-coman-family.vercel.app); HTTPS și HTTP 200 au fost verificate tehnic. URL-urile publice rămân [santiersync.ro](https://santiersync.ro) și aliasul [santiersync.vercel.app](https://santiersync.vercel.app). Deploy-ul anterior `2badb64` este păstrat pentru rollback.
+2. Deploy-ul curent are status Ready la [URL-ul său](https://santiersync-i9h4pgtw1-coman-family.vercel.app); HTTPS și HTTP 200 au fost verificate tehnic. URL-urile publice rămân [santiersync.ro](https://santiersync.ro) și aliasul [santiersync.vercel.app](https://santiersync.vercel.app). Deploy-ul anterior `2badb64` este păstrat pentru rollback.
 3. Proprietarul verifică manual UI-ul și preview-ul după ce deployment-ul este confirmat, inclusiv desktop/mobil, text, linkuri și formular. Verificarea manuală nu a fost încă efectuată.
 4. Publicarea de cod și publicarea conținutului CMS sunt separate. GitHub nu declanșează automat deploy-ul Vercel; Publish în Sanity actualizează conținutul prin webhook, cu revalidare de rezervă la 60 de secunde. Mediul demo păstrează `noindex`; un release comercial/live este separat.
 
 ## Cum se leagă localul, GitHub și site-ul
 
 - **Local:** copia de pe acest calculator, unde se editează și se verifică schimbările.
-- **GitHub:** `main` și `feat/sanity-cms` conțin codul CMS final `303ce15` și documentația actualizată; `feat/website-mvp` rămâne la checkpointul vechi `15ecadc`.
+- **GitHub:** `main` și `feat/sanity-cms` conțin codul CMS final `df35206` și documentația actualizată; `feat/website-mvp` rămâne la checkpointul vechi `15ecadc`.
 - **Sanity:** documentul CMS și datasetul `production` conțin textele publicate separat de Git; backupurile CMS stau în `Backups/Sanity`.
-- **Vercel:** deploy-ul curent are status Ready, cu URL `https://santiersync-1hb6wkb9l-coman-family.vercel.app`; deploy-ul anterior `2badb64` este punctul de rollback.
+- **Vercel:** deploy-ul curent are status Ready, cu URL `https://santiersync-i9h4pgtw1-coman-family.vercel.app`; deploy-ul anterior `2badb64` este punctul de rollback.
 - **Domenii:** URL-ul principal este `https://santiersync.ro`, iar aliasul `https://santiersync.vercel.app` este păstrat.
 - **Deploy automat:** aplicația Vercel pentru GitHub nu este conectată; codul se publică prin CLI până la configurarea integrării.
 - **Live comercial:** etapă separată, cu release gate și plan de hosting reevaluate înainte de clienți.

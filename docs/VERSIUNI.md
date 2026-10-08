@@ -4,7 +4,9 @@ Aceste repere te ajută să compari variante fără să lucrezi direct cu Git. G
 
 ## Repere
 
-- **`v0.4.1-sanity-preview`** — versiunea CMS publicată pe .ro, commit `303ce15`; permite previzualizarea din adresa oficială unde Sanity găzduiește panoul.
+- **`v0.4.2-presentation`** — corecția Presentation și a titlului din editor, commit `df35206`; permite iframe-ul din `sanity.io` și `www.sanity.io` și asociază documentul paginii principale. Retestarea manuală aparține proprietarului.
+
+- **`v0.4.1-sanity-preview`** — checkpointul CMS precedent, commit `303ce15`; permite previzualizarea din adresa oficială unde Sanity găzduiește panoul.
 
 - **`v0.4-sanity-cms`** — codul CMS Sanity, Studio-ul și integrarea site-ului; commit `3f61f9c`. Tag-ul și commitul sunt publicate în GitHub pe `main` și `feat/sanity-cms`.
 - **`feat/website-mvp`** — checkpointul vechi al aplicației website, commit `15ecadc`. Nu reprezintă codul CMS curent.
@@ -15,7 +17,7 @@ Aceste repere te ajută să compari variante fără să lucrezi direct cu Git. G
 
 ## Starea publicării
 
-Codul din `v0.4.1-sanity-preview` este sincronizat cu GitHub și publicat cu status Ready la [URL-ul Vercel](https://santiersync-1hb6wkb9l-coman-family.vercel.app). Domeniul principal este [santiersync.ro](https://santiersync.ro), cu aliasul [santiersync.vercel.app](https://santiersync.vercel.app). HTTPS și răspunsul public HTTP 200 au fost verificate tehnic. Testarea manuală a interfeței rămâne la proprietar. Deploy-ul vechi `2badb64` rămâne disponibil pentru revenirea la `v0.3.1-demo-publicat`.
+Codul din `v0.4.2-presentation` este sincronizat cu GitHub și publicat cu status Ready la [URL-ul Vercel](https://santiersync-i9h4pgtw1-coman-family.vercel.app). Domeniul principal este [santiersync.ro](https://santiersync.ro), cu aliasul [santiersync.vercel.app](https://santiersync.vercel.app). HTTPS și răspunsul public HTTP 200 au fost verificate tehnic. Testarea manuală a interfeței rămâne la proprietar. Deploy-ul vechi `2badb64` rămâne disponibil pentru revenirea la `v0.3.1-demo-publicat`.
 
 Deploy-ul automat GitHub–Vercel nu este activ deoarece aplicația Vercel pentru GitHub lipsește. Până la conectarea ei, actualizările de cod se publică explicit prin Vercel CLI. Publicarea conținutului Sanity este independentă de deploy-ul site-ului: după Publish, webhookul invalidează cache-ul, cu revalidare de rezervă la 60 de secunde.
 
