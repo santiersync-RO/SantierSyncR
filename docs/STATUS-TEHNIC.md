@@ -1,6 +1,6 @@
 # Status tehnic — 8 octombrie 2026
 
-Demo-ul personal este online și Ready în Vercel Hobby, echipa `coman-family`, la https://santiersync.vercel.app. Domeniul principal ales este santiersync.ro, dar DNS public este NXDOMAIN și HTTPS pe domeniu nu este confirmat. Repository-ul GitHub este sincronizat; integrarea Git pentru deploy automat rămâne în așteptarea instalării Vercel GitHub App și a deciziei proprietarului despre cont/politica publicării.
+Demo-ul personal este online și Ready în Vercel Hobby, echipa `coman-family`, la https://santiersync.ro (alias Vercel: https://santiersync.vercel.app). DNS-ul public indică nameserverele Vercel; Vercel raportează domeniul configurat corect, aliasul exact este atașat deploy-ului, iar certificatul TLS a fost emis. HEAD prin DNS public a returnat HTTP 200 și `X-Robots-Tag: noindex, nofollow, noarchive`. Repository-ul GitHub este sincronizat, dar integrarea Git automată a rămas neconfigurată după eroarea API 400 la GitHub App și decizia proprietarului este încă în așteptare.
 
 ## Implementat
 
@@ -13,9 +13,9 @@ Demo-ul personal este online și Ready în Vercel Hobby, echipa `coman-family`, 
 - Pagini juridice de lucru, metadate, imagine pentru distribuirea linkului, robots/sitemap condiționate de aprobarea lansării, 404 și headers de securitate.
 - Control de build care blochează producția incomplet configurată și documentație de configurare/testare manuală.
 - Etapa de demo poate fi selectată explicit prin `DEPLOYMENT_STAGE=demo`: păstrează textul homepage-ului, `noindex`, 404 pentru paginile juridice draft, `mailto` activ și API-ul dezactivat. Setările ghidate sunt pentru Preview și Production; acest gate tehnic nu validează planul hostingului, DNS-ul sau verificarea manuală.
-- Demo-ul Vercel este pe [URL stabil](https://santiersync.vercel.app), deploy-ul [curent](https://santiersync-mlmao3k8w-coman-family.vercel.app), [dashboard](https://vercel.com/coman-family/santiersync). Cele patru variabile de demo sunt setate pe Preview și Production; Node 24, `npm ci` și `npm run build` sunt configurate. Build-ul cloud și TypeScript au trecut.
-- `santiersync.ro` este adăugat în Vercel; sunt necesare nameserverele `ns1.vercel-dns.com` și `ns2.vercel-dns.com` la RoTLD. DNS-ul public este încă NXDOMAIN, iar aliasul de producție `.ro` încă nu este atașat deploy-ului; după DNS va trebui atașat sau făcut redeploy.
-- Domeniul comercial/live rămâne separat de demo și necesită date reale și aprobări legale, plus reevaluarea planului înainte de folosirea cu clienți.
+- Demo-ul Vercel este pe [URL-ul principal](https://santiersync.ro), cu [alias Vercel](https://santiersync.vercel.app), [deploy curent](https://santiersync-mlmao3k8w-coman-family.vercel.app) și [dashboard](https://vercel.com/coman-family/santiersync). Cele patru variabile de demo sunt setate pe Preview și Production; Node 24, `npm ci` și `npm run build` sunt configurate. Build-ul cloud și TypeScript au trecut.
+- DNS-ul `santiersync.ro` este verificat prin rezolvatoarele publice 1.1.1.1 și 8.8.8.8; nameserverele `ns1.vercel-dns.com` și `ns2.vercel-dns.com` sunt active. Domeniul este verificat de Vercel, aliasul `.ro` atașat și certificatul TLS emis. Proba HTTP HEAD a primit 200 cu TLS valid și noindex.
+- Lansarea comercială/live este o etapă separată și necesită date reale și aprobări legale, plus reevaluarea planului înainte de folosirea cu clienți.
 
 ## Verificări automate executate
 
@@ -27,7 +27,7 @@ Auditul complet raportează cinci alerte high în lanțul de instrumente de dezv
 
 ## Verificări care aparțin proprietarului
 
-Testarea vizuală/manuală a demo-ului nu a fost efectuată; aparține proprietarului și se poate face la https://santiersync.vercel.app. Începe cu secțiunea „Prima rundă — versiunea locală” din `TESTARE-MANUALA.md`; restul checklistului aparține etapelor ulterioare. Scoruri Lighthouse, probe pe telefoane și testarea cititorului de ecran nu sunt declarate ca verificate.
+Testarea vizuală/manuală a demo-ului nu a fost efectuată; aparține proprietarului și se poate face la https://santiersync.ro. Începe cu secțiunea „Prima rundă — versiunea locală” din `TESTARE-MANUALA.md`; restul checklistului aparține etapelor ulterioare. Scoruri Lighthouse, probe pe telefoane și testarea cititorului de ecran nu sunt declarate ca verificate.
 
 Linkul `mailto:` doar deschide un mesaj în aplicația vizitatorului. Confirmarea unei livrări reale nu este raportată acum. Endpointul API, Turnstile, Resend și WAF rămân pentru o integrare viitoare, care nu este activată în homepage.
 
