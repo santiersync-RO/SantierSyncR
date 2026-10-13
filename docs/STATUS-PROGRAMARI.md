@@ -5,8 +5,9 @@
 - Eveniment Cal.com Free: `https://cal.com/santiersyncro/30min`, 30 minute, „Discuție inițială — ȘantierSync”.
 - Cele două întrebări sunt salvate ca obligatorii în Cal.com și confirmate prin API-ul public al evenimentului. Câmpul „Firmă” este opțional.
 - Registrul Google Sheets privat este creat, cu câmpuri pentru răspunsuri, întâlnire, status, următorul pas, termen, responsabil și notițe. Legătura privată și identificatorul sunt păstrate în configurația locală, nu în Git.
-- Codul Apps Script este salvat în proiectul proprietarului. Proprietățile private și webhookul Cal.com sunt salvate; webhookul este inactiv.
-- Google afișează `Authorize access` pentru publicarea Apps Script. Autorizarea accesului este în așteptarea proprietarului. Endpointul `/exec` și sincronizarea reală către registru nu sunt încă confirmate.
+- Contul agenției are acces de editor, acordat cu aprobarea explicită a proprietarului și verificat. Proprietatea foii rămâne în contul personal; foaia nu are acces public.
+- Codul Apps Script și proprietățile private sunt salvate în proiectul asociat foii. Webhookul Cal.com este salvat și inactiv.
+- Publicarea pregătită din contul personal a fost închisă. Urmează autentificarea și autorizarea Google din contul agenției, apoi publicarea cu `Execute as: Me` din acel cont. Endpointul `/exec` și sincronizarea reală către registru nu sunt încă confirmate.
 - Configurația evenimentului și cele două secrete au fost salvate în Vercel pentru Production și Preview, fără afișarea valorilor. `REGISTRY_ENDPOINT_URL` și activarea sunt în așteptare.
 - Site-ul public nu a fost înlocuit cu această versiune. Pagina `/programare` și linkurile de rezervare sunt pregătite în cod, dar rămân dezactivate până la conectarea efectivă a registrului.
 
@@ -18,7 +19,7 @@ Testarea manuală a site-ului și a unei rezervări complete rămâne la proprie
 
 ## Continuare
 
-1. Proprietarul finalizează `Authorize access` în Google pentru aplicația de sincronizare.
+1. Utilizatorul se autentifică în contul agenției și finalizează autorizarea Google pentru aplicația de sincronizare, după pregătirea publicării din acel cont.
 2. Se confirmă deploymentul Apps Script și se salvează adresa `/exec` în mediul Vercel.
 3. Se publică versiunea pentru verificarea manuală, se activează legătura semnată și se verifică o programare controlată în registru.
 4. Se finalizează publicarea pe domeniu, păstrând modificările CMS și analytics existente.

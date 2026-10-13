@@ -14,7 +14,7 @@ La 13 octombrie 2026, profilul Cal.com `santiersyncro` are evenimentul gratuit d
 
 Evenimentul păstrează setarea Cal Video și disponibilitatea existentă. Nu s-a făcut o verificare de conflict între calendare și nu se afirmă că fiecare interval este liber sau verificat. Nu schimba programul disponibilității fără decizia proprietarului. Confirmările native Cal.com rămân singurele notificări automate cerute; nu sunt configurate notificări SMS, un CRM sau o campanie de email.
 
-Registrul privat a fost creat și codul Apps Script a fost încărcat/salvat. Proprietățile private, autorizarea Google și deploymentul web nu sunt încă gata. Până la finalizarea și verificarea acestor pași, programarea rămâne dezactivată pe site.
+Registrul privat este creat, iar codul Apps Script și proprietățile private sunt salvate. Contul agenției are acces de editor aprobat explicit; autorizarea Google din acel cont și deploymentul web sunt în așteptare. Până la finalizarea și verificarea acestor pași, programarea rămâne dezactivată pe site.
 
 ## Fluxul și condițiile de activare
 
@@ -42,7 +42,7 @@ Scriptul local `scripts/prepare-booking.mjs` pregătește fișiere `.env.local` 
 ## Pașii rămași pentru proprietar
 
 1. **Revizuiește evenimentul Cal.com.** Confirmă URL-ul, ID-ul, titlul și cele două întrebări obligatorii. Lasă întrebarea „Firmă” opțională și păstrează disponibilitatea curentă. Nu modifica durata sau descrierea fără să fie necesar.
-2. **Finalizează registrul.** Urmează [Ghidul registrului de solicitări](./REGISTRU-SOLICITARI.md). Autorizează Apps Script cu contul Google proprietar al foii și configurează cele două Script Properties cerute acolo.
+2. **Finalizează registrul.** Urmează [Ghidul registrului de solicitări](./REGISTRU-SOLICITARI.md). Autorizează Apps Script cu contul agenției care are acces de editor la foaie. Cele două Script Properties sunt deja salvate în proiectul asociat foii.
 3. **Publică Apps Script ca web app.** În proiectul Apps Script: **Deploy → New deployment → Web app**. Alege **Execute as: Me** și acces pentru **Anyone** (inclusiv utilizator neautentificat), astfel încât webhook-ul server-la-server să poată ajunge la endpoint. Endpointul public nu oferă citire de rânduri, iar `POST` acceptă numai plicuri cu semnătură validă. Dacă această setare nu este disponibilă în cont, oprește-te și cere o decizie; nu publica foaia și nu reduce verificarea semnăturii.
 4. **Configurează mediul Vercel.** Adaugă variabilele de mai sus pentru mediul ales. Folosește secretele pregătite local fără să le afișezi. Setează `REGISTRY_ENDPOINT_URL` la URL-ul deploymentului care se termină în `/exec`.
 5. **Configurează webhook-ul Cal.com.** Folosește URL-ul aplicației `https://santiersync.ro/api/calcom/webhook`, secretul `CALCOM_WEBHOOK_SECRET` și evenimentele de rezervare create, reprogramate, anulate, solicitate și respinse. Confirmă că abonamentul folosește evenimentul și organizatorul potrivite. Nu considera simpla salvare a formularului o livrare reușită.

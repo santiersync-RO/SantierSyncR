@@ -4,7 +4,7 @@ Registrul urmărește exclusiv rezervările venite prin evenimentul Cal.com Șan
 
 ## Starea actuală și confidențialitatea
 
-Foaia Google Sheets a fost creată într-un cont Google personal al proprietarului și este privată. ID-ul și linkul foii, e-mailul contului, ID-ul proiectului Apps Script și secretele nu se publică în acest ghid. Proiectul Apps Script există, iar codul din [`integrations/google-sheets/Code.gs`](../integrations/google-sheets/Code.gs) a fost încărcat și salvat. Proprietățile private nu sunt încă setate, autorizarea Google nu este finalizată, iar web app-ul nu este încă publicat; prin urmare, registrul nu primește încă rezervări.
+Foaia Google Sheets a fost creată într-un cont Google personal al proprietarului și este privată. Contul agenției are acces de editor, aprobat explicit și verificat; proprietatea foii nu a fost transferată. ID-ul și linkul foii, e-mailul contului, ID-ul proiectului Apps Script și secretele nu se publică în acest ghid. Proiectul Apps Script există, iar codul din [`integrations/google-sheets/Code.gs`](../integrations/google-sheets/Code.gs) și proprietățile private sunt salvate. Autorizarea Google din contul agenției și publicarea web app-ului nu sunt finalizate; prin urmare, registrul nu primește încă rezervări.
 
 Păstrează foaia partajată numai cu persoane pe care proprietarul le-a autorizat explicit. Ascunderea coloanelor ajută la organizare, dar nu este control de acces. Protecția intervalelor ajută la evitarea editărilor accidentale; proprietarul foii poate schimba inclusiv intervalele protejate, iar protecția nu împiedică un editor să copieze datele. Nu folosi un link public sau „Anyone with the link” pentru foaie.
 
@@ -51,7 +51,7 @@ Nu adăuga formule sau conținut manual în coloanele gestionate de Cal.com. Nu 
 
 ## Finalizarea integrării Apps Script
 
-Sunt necesare autorizarea umană a contului proprietarului și deploymentul web al codului Apps Script. Autorizarea trebuie făcută în interfața Google, de proprietarul care deține registrul; nu trimite coduri OAuth, parole sau secrete prin chat.
+Sunt necesare autorizarea umană a contului care publică scriptul și deploymentul web al codului Apps Script. Contul agenției are acces de editor la foaie și la scriptul asociat și va publica scriptul cu `Execute as: Me`. Autorizarea trebuie făcută în interfața Google din acel cont; nu trimite coduri OAuth, parole sau secrete prin chat.
 
 1. În proiectul Apps Script deschide **Project Settings → Script Properties** și adaugă două proprietăți. Valorile se obțin numai din configurația locală privată pregătită pentru integrare:
 
@@ -61,7 +61,7 @@ Sunt necesare autorizarea umană a contului proprietarului și deploymentul web 
    | `REGISTRY_SHARED_SECRET` | Secretul aleator care corespunde lui `REGISTRY_SHARED_SECRET` din mediul Vercel |
 
    Nu pune URL-ul sau ID-ul foii în sursa Apps Script, în acest document sau în setările publice ale site-ului. Proprietățile Apps Script sunt valori server-side asociate proiectului; nu sunt partajate automat cu alte proiecte.
-2. Rulează fluxul de autorizare Google ca proprietar și acordă accesul cerut pentru a scrie în foaia deținută de acel cont. Confirmă manual că fila și foaia așteptate sunt private.
+2. Rulează fluxul de autorizare Google din contul agenției și acordă accesul cerut pentru a scrie în foaia la care acel cont este editor. Confirmă manual contul afișat și faptul că fila și foaia așteptate sunt private.
 3. Alege **Deploy → New deployment → Web app**, **Execute as: Me** și acces **Anyone** (inclusiv anonim), apoi copiază URL-ul `/exec` în `REGISTRY_ENDPOINT_URL` din mediul privat Vercel. Accesul public este necesar pentru cererea server-la-server, dar nu expune rândurile: GET nu citește registrul, iar POST acceptă doar date cu HMAC corect. Nu distribui URL-ul ca pe un link de vizualizare a foii.
 4. Apps Script-ul verifică a doua semnătură HMAC cu `REGISTRY_SHARED_SECRET`, o limită de vârstă de cinci minute și schema evenimentului înainte de a schimba rânduri. Site-ul verifică prima semnătură Cal.com și sursa evenimentului înainte să trimită mai departe. Păstrează cele două secrete distincte.
 5. În Vercel configurează `REGISTRY_ENDPOINT_URL`, `REGISTRY_SHARED_SECRET`, `CALCOM_WEBHOOK_SECRET`, `CALCOM_EVENT_TYPE_ID`, `CALCOM_ORGANIZER_USERNAME`, `CALCOM_WEBHOOK_ENABLED` și `BOOKING_ENABLED`. Lasă `BOOKING_ENABLED=false` până la proba manuală completă din [ghidul Cal.com](./PROGRAMARI-CALCOM.md).
