@@ -9,7 +9,7 @@ export type RegistryResult = "ok" | "unavailable" | "failed";
 
 export async function sendBookingToRegistry(event: BookingRegistryEvent): Promise<RegistryResult> {
   const endpoint = process.env.REGISTRY_ENDPOINT_URL?.trim() ?? "";
-  const secret = process.env.REGISTRY_SHARED_SECRET ?? "";
+  const secret = process.env.REGISTRY_SHARED_SECRET?.trim() ?? "";
   if (!SCRIPT_ENDPOINT.test(endpoint) || secret.length < 32) return "unavailable";
 
   const issuedAt = new Date().toISOString();

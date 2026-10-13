@@ -70,7 +70,7 @@ export async function POST(request: Request) {
   if (process.env.CALCOM_WEBHOOK_ENABLED?.trim().toLowerCase() !== "true") {
     return reply(503, { code: "unavailable" });
   }
-  const secret = process.env.CALCOM_WEBHOOK_SECRET ?? "";
+  const secret = process.env.CALCOM_WEBHOOK_SECRET?.trim() ?? "";
   const eventTypeId = Number(process.env.CALCOM_EVENT_TYPE_ID);
   const organizerUsername = process.env.CALCOM_ORGANIZER_USERNAME?.trim().toLowerCase() ?? "";
   if (secret.length < 32 || !Number.isSafeInteger(eventTypeId) || eventTypeId <= 0 || !organizerUsername) {
