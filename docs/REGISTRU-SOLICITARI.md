@@ -4,7 +4,7 @@ Registrul urmărește exclusiv rezervările venite prin evenimentul Cal.com Șan
 
 ## Starea actuală și confidențialitatea
 
-Foaia Google Sheets a fost creată într-un cont Google personal al proprietarului și este privată. Contul agenției are acces de editor, aprobat explicit și verificat; proprietatea foii nu a fost transferată. ID-ul și linkul foii, e-mailul contului, ID-ul proiectului Apps Script și secretele nu se publică în acest ghid. Proiectul Apps Script există, iar codul din [`integrations/google-sheets/Code.gs`](../integrations/google-sheets/Code.gs) și proprietățile private sunt salvate. Autorizarea Google din contul agenției și publicarea web app-ului nu sunt finalizate; prin urmare, registrul nu primește încă rezervări.
+Foaia Google Sheets este deținută de proprietarul contului personal și rămâne privată. Contul agenției are acces de editor, aprobat explicit și verificat; proprietatea foii nu a fost transferată. ID-ul și linkul foii, e-mailurile, ID-ul proiectului Apps Script, URL-ul privat `/exec` și secretele nu se publică în acest ghid. Proiectul Apps Script și proprietățile private sunt salvate. Deploymentul Apps Script versiunea 2 este publicat din contul agenției cu `Execute as: Me` și acces `Anyone`. Cele nouă variabile sunt salvate în Vercel pentru Production și Preview. Deploymentul separat de test este READY: [pagina de programare](https://programari-demo.santiersync.ro/programare) răspunde cu 200, iar `POST` nesemnat la [API-ul webhook de test](https://programari-demo.santiersync.ro/api/calcom/webhook) primește 401 `signature`, fără scriere în Sheets. Aceste probe nu confirmă o livrare semnată sau sincronizarea rezervărilor. Webhookul Cal.com este salvat, activ și abonat la cele cinci evenimente; `subscriberURL` indică temporar API-ul de test. Domeniul principal păstrează versiunea veche, iar API-ul său răspunde momentan 404.
 
 Păstrează foaia partajată numai cu persoane pe care proprietarul le-a autorizat explicit. Ascunderea coloanelor ajută la organizare, dar nu este control de acces. Protecția intervalelor ajută la evitarea editărilor accidentale; proprietarul foii poate schimba inclusiv intervalele protejate, iar protecția nu împiedică un editor să copieze datele. Nu folosi un link public sau „Anyone with the link” pentru foaie.
 
@@ -45,32 +45,32 @@ La prima primire validă, scriptul setează statusul solicitării `Nouă`, urmă
 - O rezervare nouă adaugă un rând. O reprogramare actualizează rândul găsit și păstrează M:Q. Anulările vechi, evenimentele ajunse în ordine greșită și anulările fără pereche nu creează solicitări noi.
 - Dacă un eveniment de reprogramare nu se poate lega de rândul existent și nu are răspunsurile obligatorii, scriptul îl respinge în loc să creeze un rând incomplet.
 - Datele text care ar putea fi interpretate ca formule în Sheets sunt scrise ca text. Rândurile sunt actualizate sub un lock de script, iar payloadurile cu semnătură lipsă, incorectă sau expirată sunt respinse.
-- Codul nu oferă o rută de citire a rezervărilor. `GET` răspunde doar cu un indicator simplu de serviciu; `POST` cere o semnătură HMAC validă. Nu folosi URL-ul `/exec` pentru a accesa foaia.
+- Codul nu oferă o rută de citire a rezervărilor. Verificările curente arată că `GET` oferă numai un indicator de serviciu și că un `POST` nesemnat este respins fără scriere. Nu s-a verificat un `POST` semnat și nu considera registrul conectat până la proba manuală a utilizatorului.
 
 Nu adăuga formule sau conținut manual în coloanele gestionate de Cal.com. Nu copia rânduri duplicate pentru aceeași rezervare. Completează progresul și revenirea numai în M:Q. Nu include în notițe informații care nu sunt necesare pentru a urmări discuția.
 
-## Finalizarea integrării Apps Script
+## Starea deploymentului și configurarea privată
 
-Sunt necesare autorizarea umană a contului care publică scriptul și deploymentul web al codului Apps Script. Contul agenției are acces de editor la foaie și la scriptul asociat și va publica scriptul cu `Execute as: Me`. Autorizarea trebuie făcută în interfața Google din acel cont; nu trimite coduri OAuth, parole sau secrete prin chat.
+Autorizarea Google este finalizată, iar deploymentul web versiunea 2 este publicat din contul agenției cu `Execute as: Me` și acces `Anyone`, necesar pentru cererile server-la-server. Verificările anonime Apps Script au confirmat funcțiile `GET` și `POST`; deploymentul Vercel separat este READY și răspunde la [pagina de test](https://programari-demo.santiersync.ro/programare). Un `POST` nesemnat la API-ul de test este respins cu 401 `signature`; acest răspuns nu confirmă o actualizare semnată a foii. URL-ul privat `/exec` nu se include în documentație și nu se distribuie pentru acces la foaie.
 
-1. În proiectul Apps Script deschide **Project Settings → Script Properties** și adaugă două proprietăți. Valorile se obțin numai din configurația locală privată pregătită pentru integrare:
+Proprietățile Apps Script sunt deja salvate în proiectul asociat foii. Cele nouă variabile necesare sunt salvate în Vercel pentru Production și Preview. Un deployment separat de testare are `BOOKING_ENABLED=true` și `CALCOM_WEBHOOK_ENABLED=true`, iar subscriberul Cal.com îl folosește temporar. Domeniul principal servește încă versiunea veche, iar API-ul său răspunde cu 404. Pentru referință, numele proprietăților Apps Script și scopurile lor sunt:
 
    | Nume proprietate | Valoare |
    |---|---|
    | `REGISTRY_SPREADSHEET_ID` | ID-ul foii private a proprietarului |
    | `REGISTRY_SHARED_SECRET` | Secretul aleator care corespunde lui `REGISTRY_SHARED_SECRET` din mediul Vercel |
 
-   Nu pune URL-ul sau ID-ul foii în sursa Apps Script, în acest document sau în setările publice ale site-ului. Proprietățile Apps Script sunt valori server-side asociate proiectului; nu sunt partajate automat cu alte proiecte.
-2. Rulează fluxul de autorizare Google din contul agenției și acordă accesul cerut pentru a scrie în foaia la care acel cont este editor. Confirmă manual contul afișat și faptul că fila și foaia așteptate sunt private.
-3. Alege **Deploy → New deployment → Web app**, **Execute as: Me** și acces **Anyone** (inclusiv anonim), apoi copiază URL-ul `/exec` în `REGISTRY_ENDPOINT_URL` din mediul privat Vercel. Accesul public este necesar pentru cererea server-la-server, dar nu expune rândurile: GET nu citește registrul, iar POST acceptă doar date cu HMAC corect. Nu distribui URL-ul ca pe un link de vizualizare a foii.
-4. Apps Script-ul verifică a doua semnătură HMAC cu `REGISTRY_SHARED_SECRET`, o limită de vârstă de cinci minute și schema evenimentului înainte de a schimba rânduri. Site-ul verifică prima semnătură Cal.com și sursa evenimentului înainte să trimită mai departe. Păstrează cele două secrete distincte.
-5. În Vercel configurează `REGISTRY_ENDPOINT_URL`, `REGISTRY_SHARED_SECRET`, `CALCOM_WEBHOOK_SECRET`, `CALCOM_EVENT_TYPE_ID`, `CALCOM_ORGANIZER_USERNAME`, `CALCOM_WEBHOOK_ENABLED` și `BOOKING_ENABLED`. Lasă `BOOKING_ENABLED=false` până la proba manuală completă din [ghidul Cal.com](./PROGRAMARI-CALCOM.md).
+Nu pune URL-ul sau ID-ul foii în sursa Apps Script, în acest document sau în setările publice ale site-ului. Proprietățile Apps Script sunt valori server-side asociate proiectului; nu sunt partajate automat cu alte proiecte.
 
-Nu activa un deployment Apps Script vechi doar pentru că există. După modificarea codului, publică o versiune nouă și confirmă că deploymentul activ folosește versiunea salvată curentă. URL-ul test `/dev` este destinat editorilor proiectului și nu se folosește în Vercel.
+1. Utilizatorul deschide [pagina publică de test](https://programari-demo.santiersync.ro/programare), creează o singură rezervare, editează coloanele M:Q, apoi reprogramează și anulează aceeași rezervare.
+2. Utilizatorul confirmă că registrul conține un singur rând, că actualizările rezervării au ajuns și că editările M:Q s-au păstrat. Până la această confirmare, sincronizarea nu este considerată verificată.
+3. După confirmarea reușită se promovează deploymentul pe domeniul principal și `subscriberURL` din Cal.com se schimbă la `https://santiersync.ro/api/calcom/webhook`. Până atunci, domeniul principal rămâne pe versiunea veche.
+
+Apps Script-ul verifică a doua semnătură HMAC cu `REGISTRY_SHARED_SECRET`, o limită de vârstă de cinci minute și schema evenimentului înainte de a schimba rânduri. Site-ul verifică prima semnătură Cal.com și sursa evenimentului înainte să trimită mai departe. Păstrează cele două secrete distincte. Accesul `Anyone` se aplică endpointului de primire, nu foii Google Sheets; foaia rămâne partajată numai cu persoanele autorizate.
 
 ## Verificare și oprire
 
-Proba inițială se face cu o singură rezervare fictivă controlată, apoi se reprogramează și se anulează. Proprietarul confirmă că a apărut un singur rând, că starea a fost actualizată și că editările M:Q au rămas neschimbate. Verificarea manuală nu se înlocuiește cu un test automat, un HTTP 200, o pagină iframe încărcată sau un `GET` sănătos al endpointului.
+Deploymentul separat de test este READY, cu pagina publică și webhookul activate. Utilizatorul face proba cu o singură rezervare, editează M:Q, apoi reprogramează și anulează aceeași rezervare. Confirmă că rândul a fost actualizat și că editările manuale au rămas intacte. Verificarea manuală nu se înlocuiește cu un test automat, un HTTP 200, o pagină iframe încărcată sau un răspuns `GET` al endpointului.
 
 La oprirea programărilor, setează `BOOKING_ENABLED=false`; pentru a opri și webhook-ul, setează `CALCOM_WEBHOOK_ENABLED=false`. Păstrează foaia privată și datele deja primite conform perioadei de păstrare pe care o aprobă proprietarul. Revizuiește periodic cine are acces și retrage accesul celor care nu mai au nevoie de el.
 

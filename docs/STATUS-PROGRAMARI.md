@@ -1,27 +1,23 @@
 # Status programări — 13 octombrie 2026
 
-- Branch de lucru: `feat/cal-booking`, separat de `main` și de modificările analytics aflate în lucru.
-- Reper de cod: `v0.5-programari-pregatite`. Codul și documentația sunt sincronizate pe GitHub; fișierele `.env` sunt ignorate.
-- Eveniment Cal.com Free: `https://cal.com/santiersyncro/30min`, 30 minute, „Discuție inițială — ȘantierSync”.
-- Cele două întrebări sunt salvate ca obligatorii în Cal.com și confirmate prin API-ul public al evenimentului. Câmpul „Firmă” este opțional.
-- Registrul Google Sheets privat este creat, cu câmpuri pentru răspunsuri, întâlnire, status, următorul pas, termen, responsabil și notițe. Legătura privată și identificatorul sunt păstrate în configurația locală, nu în Git.
-- Contul agenției are acces de editor, acordat cu aprobarea explicită a proprietarului și verificat. Proprietatea foii rămâne în contul personal; foaia nu are acces public.
-- Codul Apps Script și proprietățile private sunt salvate în proiectul asociat foii. Webhookul Cal.com este salvat și inactiv.
-- Publicarea pregătită din contul personal a fost închisă. Urmează autentificarea și autorizarea Google din contul agenției, apoi publicarea cu `Execute as: Me` din acel cont. Endpointul `/exec` și sincronizarea reală către registru nu sunt încă confirmate.
-- Configurația evenimentului și cele două secrete au fost salvate în Vercel pentru Production și Preview, fără afișarea valorilor. `REGISTRY_ENDPOINT_URL` și activarea sunt în așteptare.
-- Site-ul public nu a fost înlocuit cu această versiune. Pagina `/programare` și linkurile de rezervare sunt pregătite în cod, dar rămân dezactivate până la conectarea efectivă a registrului.
+- Lucrul la programări este pe branch-ul `feat/cal-booking`, separat de `main` și de modificările analytics aflate în lucru.
+- Evenimentul gratuit Cal.com de 30 de minute și cele două întrebări obligatorii sunt configurate și confirmate. Întrebarea „Firmă” rămâne opțională. Linkul public este descris în [ghidul Cal.com](PROGRAMARI-CALCOM.md); ID-ul evenimentului rămâne în configurația privată.
+- Registrul Google Sheets este deținut de proprietarul contului personal. Contul agenției are acces de editor, acordat și verificat; foaia rămâne privată.
+- Autorizarea Google din contul agenției este finalizată. Deploymentul Apps Script versiunea 2 a fost publicat pe 13 octombrie 2026 la 17:18 (ora București), cu `Execute as: Me` din contul agenției și acces `Anyone`. Adresa `/exec` este păstrată privat.
+- Verificările anonime confirmă că `GET` răspunde cu indicatorul generic al serviciului, iar `POST` fără semnătură răspunde cu `invalid` fără să scrie în foaie. Aceste probe confirmă că handler-ele sunt disponibile; nu confirmă o trimitere autentificată sau sincronizarea unei rezervări.
+- Cele nouă variabile sunt salvate în Vercel pentru Production și Preview. Deploymentul separat de testare este READY; compilarea, verificarea TypeScript și generarea statică au reușit. Are `BOOKING_ENABLED=true` și `CALCOM_WEBHOOK_ENABLED=true`. [Pagina publică de test](https://programari-demo.santiersync.ro/programare) răspunde cu 200, fără redirect la autentificare. `POST` nesemnat către [API-ul webhook de test](https://programari-demo.santiersync.ro/api/calcom/webhook) este respins cu 401 `signature`, înainte de orice scriere în Sheets.
+- Webhookul Cal.com a fost salvat cu succes, este activ și abonat la cinci evenimente: `created`, `rescheduled`, `cancelled`, `requested` și `rejected`. `subscriberURL` indică temporar API-ul deploymentului de test. Domeniul principal păstrează încă versiunea veche; `/api/calcom/webhook` pe acesta răspunde cu 404.
+- Testul manual complet îi revine utilizatorului: o rezervare, editarea M:Q, reprogramarea, anularea și verificarea unui singur rând cu valorile manuale păstrate. După confirmarea reușită, deploymentul se promovează pe domeniul principal, iar `subscriberURL` se schimbă la `https://santiersync.ro/api/calcom/webhook`.
 
-## Verificări tehnice
+## Verificări și limite
 
-Lint, TypeScript și build au trecut. Au trecut opt probe automate pentru semnături, sursă, întrebări obligatorii, răspunsuri multiline, duplicate, reprogramare, anulări vechi, formule introduse ca text și păstrarea coloanelor manuale. Probele Apps Script rulează într-un mediu simulat; nu confirmă autorizarea Google sau sincronizarea unui eveniment real.
+Verificările locale lint, TypeScript și build au trecut înainte de publicare. Buildul Vercel al versiunii de test a trecut de asemenea; testarea vizuală și a rezervărilor îi revine utilizatorului.
 
-Testarea manuală a site-ului și a unei rezervări complete rămâne la proprietar. Nu s-au creat rezervări reale sau mesaje către potențiali clienți pentru testare.
+Au trecut și opt probe automate simulate pentru semnături, sursă, întrebări obligatorii, răspunsuri multiline, duplicate, reprogramare, anulări vechi, formule și păstrarea coloanelor manuale. Cererea publică nesemnată a endpointului de test primește 401 `signature`, confirmând că handlerul respinge cereri fără semnătură. Nu s-a făcut încă o rezervare semnată și nu s-a confirmat sincronizarea registrului; testul manual al utilizatorului rămâne necesar.
 
-## Continuare
+## Pașii rămași
 
-1. Utilizatorul se autentifică în contul agenției și finalizează autorizarea Google pentru aplicația de sincronizare, după pregătirea publicării din acel cont.
-2. Se confirmă deploymentul Apps Script și se salvează adresa `/exec` în mediul Vercel.
-3. Se publică versiunea pentru verificarea manuală, se activează legătura semnată și se verifică o programare controlată în registru.
-4. Se finalizează publicarea pe domeniu, păstrând modificările CMS și analytics existente.
+1. Utilizatorul deschide [pagina publică de test](https://programari-demo.santiersync.ro/programare) și urmează pașii manuali din [ghidul Cal.com](PROGRAMARI-CALCOM.md): rezervă, editează M:Q, reprogramează, apoi anulează.
+2. După confirmarea unui singur rând corect, inclusiv păstrarea editărilor M:Q, deploymentul se promovează pe domeniul principal și `subscriberURL` din Cal.com se schimbă la `https://santiersync.ro/api/calcom/webhook`.
 
 Detalii: [programări](PROGRAMARI-CALCOM.md) și [registru](REGISTRU-SOLICITARI.md).
