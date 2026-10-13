@@ -12,9 +12,11 @@ La 13 octombrie 2026, profilul Cal.com `santiersyncro` are evenimentul gratuit d
 | `blocaj_timp` | Obligatoriu; „Unde pierdeți cel mai mult timp?”; răspuns text, minimum 1 și maximum 1000 de caractere |
 | Firmă | Opțional |
 
-Evenimentul folosește programul curent din Cal.com: luni–vineri, 09:00–17:00, fusul `Europe/Bucharest`; weekendurile sunt indisponibile. Calendarul Google este conectat, iar adăugarea evenimentelor este activată. Nu s-a testat dacă evenimentul este blocat efectiv de conflictele calendarului. Orele nu au fost modificate. Confirmările native Cal.com rămân singurele notificări automate cerute; nu sunt configurate notificări SMS, un CRM sau o campanie de email.
+Disponibilitatea este gestionată de utilizator în Cal.com; agentul nu a modificat setările de disponibilitate. Confirmările native Cal.com rămân singurele notificări automate cerute; nu sunt configurate notificări SMS, un CRM sau o campanie de email.
 
-Registrul privat este creat, iar codul Apps Script și proprietățile private sunt salvate. Foaia este deținută de proprietarul contului personal; contul agenției are acces de editor. Autorizarea Google din contul agenției este finalizată, iar deploymentul web versiunea 2 a fost publicat pe 13 octombrie 2026 la 17:18 (ora București) cu `Execute as: Me` și acces `Anyone`. Verificările anonime confirmă că `GET` răspunde cu indicatorul generic al serviciului, iar un `POST` fără semnătură este respins cu `invalid`, fără scriere în foaie. Aceste verificări nu confirmă o livrare semnată sau sincronizarea rezervărilor. Cele nouă variabile necesare sunt salvate în Vercel pentru Production și Preview; deploymentul separat de testare este READY și a trecut compilarea, verificarea TypeScript și generarea statică. Pagina publică de test, [Programare — demo](https://programari-demo.santiersync.ro/programare), răspunde cu 200 fără redirect la autentificare. `BOOKING_ENABLED=true` și `CALCOM_WEBHOOK_ENABLED=true` sunt active numai în deploymentul separat. Webhookul Cal.com este salvat cu succes, activat și abonat la cinci declanșatoare (`created`, `rescheduled`, `cancelled`, `requested`, `rejected`); `subscriberURL` indică temporar endpointul public [API webhook — demo](https://programari-demo.santiersync.ro/api/calcom/webhook). Un `POST` nesemnat la acest API primește 401 `signature`, fără scriere în Sheets. Domeniul principal servește încă versiunea veche, iar `https://santiersync.ro/api/calcom/webhook` răspunde cu 404. După proba reușită a utilizatorului, versiunea se promovează pe domeniul principal, iar `subscriberURL` din Cal.com se schimbă la endpointul domeniului principal.
+Răspunsurile Google Calendar la o invitație (`Accept`, `Decline` sau `Maybe`) sunt RSVP-uri pentru evenimentul din Google Calendar; singure nu anulează și nu modifică rezervarea Cal.com. Pentru anulare sau reprogramare folosește acțiunea Cal.com din pagina Bookings ori linkul din mesajul de confirmare. Ștergerea evenimentului doar din calendarul conectat nu elimină rezervarea din Cal.com. Google Calendar permite consultarea RSVP-urilor în lista invitaților și configurarea notificărilor pentru răspunsuri. Surse: [FAQ Cal.com — anulări și răspunsuri Google Calendar](https://cal.com/faq) și [Google Calendar — urmărirea răspunsurilor invitaților](https://support.google.com/calendar/answer/16713792).
+
+Registrul privat este creat, iar codul Apps Script și proprietățile private sunt salvate. Foaia este deținută de proprietarul contului personal; contul agenției are acces de editor. Deploymentul Apps Script versiunea 2 rulează cu `Execute as: Me` din contul agenției și acces `Anyone`. Cele nouă variabile necesare sunt salvate în Vercel pentru Production și Preview. Utilizatorul a confirmat pe 13 octombrie 2026 testul manual complet pe deploymentul demo: rezervare, editare M:Q, reprogramare și anulare; registrul a păstrat un singur rând și valorile manuale. Același deployment a fost promovat pe domeniul principal, iar demo-ul rămâne disponibil la [Programare — demo](https://programari-demo.santiersync.ro/programare). Pagina principală [Programare](https://santiersync.ro/programare) răspunde cu 200 fără redirect la autentificare. `POST` nesemnat la [API-ul webhook principal](https://santiersync.ro/api/calcom/webhook) răspunde 401 `signature`, fără scriere în Sheets; aceasta este verificarea HTTP de după promovare, nu o repetare a testului manual. Webhookul Cal.com este salvat și activ, cu aceleași cinci declanșatoare (`created`, `rescheduled`, `cancelled`, `requested`, `rejected`) și același secret; `subscriberURL` indică acum API-ul principal.
 
 ## Fluxul și condițiile de activare
 
@@ -27,26 +29,23 @@ Site-ul este dezactivat implicit. În `.env.example`, `BOOKING_ENABLED=false` ș
 
 | Variabilă | Valoare/scop |
 |---|---|
-| `BOOKING_ENABLED` | `true` doar în deploymentul separat de testare, pentru ca utilizatorul să poată verifica pagina; domeniul principal servește încă versiunea veche. |
+| `BOOKING_ENABLED` | Activ pe domeniul principal și pe demo după promovarea buildului testat. |
 | `CALCOM_EVENT_URL` | Evenimentul verificat: `https://cal.com/santiersyncro/30min`. Configurația acceptă doar HTTPS pe `cal.com` și calea organizatorului/evenimentului așteptat. |
 | `CALCOM_EVENT_TYPE_ID` | ID-ul evenimentului păstrat în configurația privată; identifică sursa permisă a webhook-urilor. |
 | `CALCOM_ORGANIZER_USERNAME` | `santiersyncro`. |
 | `CALCOM_REQUIRED_QUESTIONS_CONFIRMED` | `true` numai cât timp ambele câmpuri obligatorii sunt salvate exact ca mai sus. |
-| `CALCOM_WEBHOOK_ENABLED` | `true` în deploymentul separat de testare; configurarea separată permite verificarea manuală. |
+| `CALCOM_WEBHOOK_ENABLED` | Activ pe deploymentul publicat; webhookul Cal.com indică ruta API de pe domeniul principal. |
 | `CALCOM_WEBHOOK_SECRET` | Secret aleator, păstrat privat, comun doar între setarea webhook-ului Cal.com și Vercel. Minimum 32 de caractere. |
 | `REGISTRY_ENDPOINT_URL` | URL-ul `/exec` al deploymentului Apps Script. Este un endpoint de primire, nu un link către foaia Google Sheets. |
 | `REGISTRY_SHARED_SECRET` | Al doilea secret aleator; aceeași valoare în Vercel și în proprietatea Apps Script cu același nume. Minimum 32 de caractere. |
 
 Scriptul local `scripts/prepare-booking.mjs` pregătește fișiere `.env.local` și `.env.booking.local`, ignorate de Git. Acesta generează chei noi dacă nu există deja valori valide și scrie ID-ul foii doar în fișierul local privat. Nu publica, nu copia în documentație și nu trimite conținutul acestor fișiere în chat. Adaugă secretele în Vercel prin interfața privată a proiectului. Nu hardcoda ID-ul foii, URL-ul ei sau cheile în sursă.
 
-## Pașii rămași
+## Proba manuală confirmată
 
-1. Utilizatorul deschide [pagina publică de test](https://programari-demo.santiersync.ro/programare). URL-ul deploymentului intern și endpointul Apps Script `/exec` nu se publică în documentație ori Git.
-2. Utilizatorul face proba controlată din secțiunea următoare. Abia după confirmarea sa că foaia s-a actualizat corect se promovează versiunea pe domeniul principal și se actualizează `subscriberURL` din Cal.com la `https://santiersync.ro/api/calcom/webhook`.
+Utilizatorul a făcut această verificare pe deploymentul demo pe 13 octombrie 2026. El a rezervat în Cal.com, a editat M:Q, a reprogramat și a anulat aceeași rezervare. Rezultatul confirmat a fost un singur rând, cu editările M:Q păstrate. Același deployment a fost promovat ulterior pe domeniul principal; testul manual nu a fost repetat acolo.
 
-## Proba manuală a proprietarului
-
-Folosește o singură rezervare fictivă controlată, fără datele unei persoane reale. Înainte de probă verifică faptul că în formular nu se poate continua cu niciuna dintre întrebările obligatorii lăsată goală. Apoi:
+Pașii de verificare, pentru referință:
 
 1. Creează rezervarea controlată și confirmă un singur rând nou în fila `Solicitări`, cu răspunsurile și starea așteptate.
 2. Editează manual celulele corespunzătoare coloanelor M:Q din acel rând.
@@ -54,7 +53,11 @@ Folosește o singură rezervare fictivă controlată, fără datele unei persoan
 4. Anulează rezervarea și confirmă actualizarea stării fără crearea unui al doilea rând și fără ștergerea editărilor manuale.
 5. Notează data, deploymentul și rezultatul; nu salva răspunsuri, e-mailuri sau alte date personale în raportul de probă.
 
-Fă proba în deploymentul separat, unde `BOOKING_ENABLED` și `CALCOM_WEBHOOK_ENABLED` sunt deja active. Creează o singură rezervare controlată, editează M:Q în rândul ei, reprogramează apoi anulează aceeași rezervare. Confirmă că toate evenimentele păstrează un singur rând și că editările manuale au rămas intacte. Verificările anonime ale handlerelor nu substituie această probă. După confirmarea manuală, promovează versiunea pe domeniul principal și actualizează `subscriberURL` la endpointul principal. Pentru a opri testul înainte de promovare, setează flagurile acelui deployment pe `false`; nu șterge foaia sau rezervările existente în timpul opririi.
+Verificarea manuală îi revine utilizatorului; nu a fost repetată automat după promovare. Pagina și API-ul principal au fost verificate separat prin HTTP: pagina a răspuns 200, iar API-ul a respins `POST` nesemnat cu 401 `signature`.
+
+## Rollback și oprire
+
+Înainte de rollback la o versiune fără ruta API, dezactivează webhookul Cal.com ca să eviți retry-uri către 404. Apoi promovează deploymentul anterior. Dacă oprești programările, setează `BOOKING_ENABLED=false` și `CALCOM_WEBHOOK_ENABLED=false` pentru deploymenturile viitoare și publică un deployment nou. Nu șterge foaia sau rezervările existente.
 
 ## Resurse Google oficiale
 
