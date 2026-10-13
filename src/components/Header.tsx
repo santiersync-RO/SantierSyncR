@@ -9,9 +9,10 @@ import styles from "./Header.module.css";
 type HeaderProps = {
   navigation: SiteContent["home"]["navigation"];
   logo: SiteContent["branding"]["logo"];
+  bookingEnabled?: boolean;
 };
 
-export default function Header({ navigation, logo }: HeaderProps) {
+export default function Header({ navigation, logo, bookingEnabled = false }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const menuToggleRef = useRef<HTMLButtonElement>(null);
 
@@ -81,6 +82,11 @@ export default function Header({ navigation, logo }: HeaderProps) {
               {label}
             </Link>
           ))}
+          {bookingEnabled && (
+            <Link href="/programare" onClick={closeMenu}>
+              Programează o discuție
+            </Link>
+          )}
           <Link
             className={styles.navCta}
             href="/#contact"

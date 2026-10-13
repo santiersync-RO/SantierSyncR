@@ -4,6 +4,7 @@ import { getDraftSiteContent, getSiteContent } from "@/lib/sanity.server";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import styles from "./home.module.css";
+import { bookingConfig } from "@/config/booking";
 
 type IconName = "request" | "flow" | "documents" | "extract" | "support" | "check";
 
@@ -224,6 +225,11 @@ export default async function HomePage() {
               <span className={styles.orange}>{homeCopy.contactIntro.title[1]}</span>
             </h2>
             <p>{homeCopy.contactIntro.description}</p>
+            {bookingConfig.enabled && (
+              <Link className={styles.primaryLink} href="/programare">
+                Programează o discuție<span aria-hidden="true">→</span>
+              </Link>
+            )}
             <a className={styles.emailLink} href={`mailto:${homeCopy.contactIntro.email}`}>
               {homeCopy.contactIntro.email}<span aria-hidden="true">↗</span>
             </a>

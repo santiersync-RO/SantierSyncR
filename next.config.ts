@@ -51,7 +51,7 @@ const nextConfig: NextConfig = {
               `img-src 'self' data: blob: https://cdn.sanity.io`,
               `font-src 'self' data:`,
               `connect-src 'self' https://challenges.cloudflare.com`,
-              `frame-src https://challenges.cloudflare.com`,
+              `frame-src https://challenges.cloudflare.com https://cal.com https://app.cal.com`,
               `base-uri 'self'`,
               `form-action 'self'`,
               `object-src 'none'`,
