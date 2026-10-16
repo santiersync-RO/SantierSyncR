@@ -2,6 +2,10 @@
 
 ## Situația de acum
 
+Versiunea curentă este **v0.6-pilot-conversion**, publicată la [santiersync.ro](https://santiersync.ro), cu sursele în `main`, `feat/pilot-conversion` și copia locală. Vezi [raportul din 17 octombrie 2026](LIVRARE-2026-10-17.md) pentru verificările reale și dependențele rămase. Publicarea rămâne explicită prin CLI; nu există deployment automat la push. Bundle-ul nou este `D:\AI\Codex\ȘantierSync\Backups\SantierSync-2026-10-17.bundle`.
+
+### Istoric — octombrie 2026, înaintea versiunii pilot
+
 Repository-ul public [SantierSyncR pe GitHub](https://github.com/santiersync-RO/SantierSyncR) are CMS-ul în commitul `3f61f9c`, tag `v0.4-sanity-cms`, publicat pe branch-urile `main` și `feat/sanity-cms`. Branch-ul `feat/website-mvp` rămâne checkpointul vechi `15ecadc`; nu este codul CMS curent. Tag-urile precedente `v0.2-design-referinta` (`d80f477`), `v0.3-demo-vercel` (`cb0054a`) și `v0.3.1-demo-publicat` (`2badb64`) rămân disponibile.
 
 Versiunea `v0.4.2-presentation`, commit `df35206`, este publicată cu status Ready în proiectul Vercel `santiersync`, echipa `coman-family`, la [URL-ul curent](https://santiersync-i9h4pgtw1-coman-family.vercel.app). Domeniul principal este [santiersync.ro](https://santiersync.ro), cu aliasul [santiersync.vercel.app](https://santiersync.vercel.app). HTTPS, HTTP 200, încărcarea conținutului Sanity și protecția webhookului au fost verificate tehnic; verificarea manuală a interfeței rămâne la proprietar. Deploy-ul vechi `2badb64`, publicat ca `v0.3.1-demo-publicat`, este păstrat pentru rollback. Vezi și [dashboard-ul Vercel](https://vercel.com/coman-family/santiersync).

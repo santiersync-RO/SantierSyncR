@@ -1,4 +1,8 @@
-# Status tehnic — 8 octombrie 2026
+# Status tehnic
+
+Starea curentă este documentată în [livrarea din 17 octombrie 2026](LIVRARE-2026-10-17.md). Secțiunile de mai jos păstrează istoricul din 8 octombrie și nu descriu versiunea curentă.
+
+## Arhivă — 8 octombrie 2026
 
 Demo-ul personal este online și Ready în Vercel Hobby, echipa `coman-family`, la https://santiersync.ro (alias Vercel: https://santiersync.vercel.app). DNS-ul public indică nameserverele Vercel; Vercel raportează domeniul configurat corect, aliasul exact este atașat deploy-ului, iar certificatul TLS a fost emis. HEAD prin DNS public a returnat HTTP 200 și `X-Robots-Tag: noindex, nofollow, noarchive`. Repository-ul GitHub este sincronizat, dar integrarea Git automată a rămas neconfigurată după eroarea API 400 la GitHub App și decizia proprietarului este încă în așteptare.
 

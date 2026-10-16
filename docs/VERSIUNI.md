@@ -4,6 +4,9 @@ Aceste repere te ajută să compari variante fără să lucrezi direct cu Git. G
 
 ## Repere
 
+- **`v0.6-pilot-conversion`** — 17 octombrie 2026: oferte pilot, registru demonstrativ, indexare publică server-side, calendar în română, formular direct implementat și păstrat oprit până la credențiale. Aplicația publicată este `cd7ce84`; tagul include raportul și probele de livrare. Vezi [raportul](LIVRARE-2026-10-17.md).
+- **`v0.5.2-programari-publicate`** — versiunea anterioară cu programări, păstrată pentru revenire.
+
 - **`v0.4.2-presentation`** — corecția Presentation și a titlului din editor, commit `df35206`; permite iframe-ul din `sanity.io` și `www.sanity.io` și asociază documentul paginii principale. Retestarea manuală aparține proprietarului.
 
 - **`v0.4.1-sanity-preview`** — checkpointul CMS precedent, commit `303ce15`; permite previzualizarea din adresa oficială unde Sanity găzduiește panoul.

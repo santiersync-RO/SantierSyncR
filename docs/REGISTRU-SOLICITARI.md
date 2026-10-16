@@ -1,6 +1,6 @@
 # Registrul privat de solicitări
 
-Registrul urmărește exclusiv rezervările venite prin evenimentul Cal.com ȘantierSync. El nu primește mesajele trimise prin linkul `mailto:` de pe site. Linkul deschide aplicația de email a vizitatorului; site-ul nu primește și nu stochează acel mesaj. Dacă proprietarul dorește să urmărească și solicitările prin email, acestea se notează manual în registru sau se proiectează separat o integrare de contact.
+Registrul urmărește rezervările venite prin Cal.com și, după activarea separată descrisă mai jos, mesajele trimise prin formularul de contact al site-ului. Mesajele de contact ajung într-o filă separată; nu se amestecă cu rândurile rezervărilor și nu modifică fluxul Cal.com.
 
 ## Starea actuală și confidențialitatea
 
@@ -38,6 +38,16 @@ Fila se numește `Solicitări`. Scriptul creează antetul de 20 de coloane la pr
 Coloanele **M:Q** sunt spațiul de lucru manual. Webhook-ul actualizează datele rezervării și păstrează valorile deja introduse în M:Q la reprogramare sau anulare. Coloanele A:D, I și R:T sunt ascunse pentru lizibilitate și protejate pentru a evita editarea accidentală. Antetul este protejat. Nu șterge coloanele și nu schimba numele antetelor: scriptul verifică exact schema înainte de a scrie.
 
 La prima primire validă, scriptul setează statusul solicitării `Nouă`, următorul pas `Pregătește discuția inițială` și responsabilul `ȘantierSync`. Acestea sunt date de lucru pe care proprietarul le poate modifica ulterior în M:Q.
+
+## Mesaje trimise prin formularul site-ului
+
+Codul Apps Script din repository este pregătit să accepte evenimente de contact și să le scrie într-o filă distinctă numită `Mesaje contact`. Fila are coloanele `ID solicitare`, `Creată la`, `Nume`, `E-mail`, `Firmă` și `Mesaj`. ID-ul solicitării este un hash stabil folosit la deduplicare; o retrimitere cu același ID nu adaugă un al doilea rând. Textul care ar putea fi interpretat ca formulă este scris în siguranță ca text.
+
+Deploymentul Apps Script versiunea 2 existent nu include încă această extensie. Producția formularului rămâne dezactivată până când proprietarul configurează cheile Resend și Turnstile. În plus, transportul către registru trebuie să rămână dezactivat prin `CONTACT_REGISTRY_ENABLED=false` și `CONTACT_REGISTRY_VERIFIED=false` până la actualizarea deploymentului și o verificare controlată. Nu considera codul pregătit din repository drept dovadă că deploymentul activ primește deja mesaje de contact.
+
+Pentru activare, actualizează proiectul Apps Script asociat foii cu versiunea curentă a codului din repository, apoi, în **Deploy → Manage deployments**, editează deploymentul web existent și publică o **versiune nouă** a aceluiași deployment. Nu crea un deployment separat: astfel se păstrează URL-ul `/exec` deja folosit de webhook și proprietățile proiectului. Nu schimba și nu șterge `REGISTRY_SPREADSHEET_ID` sau `REGISTRY_SHARED_SECRET` din Script Properties, nu schimba valorile lor din Vercel și nu rescrie ori șterge rândurile existente din `Solicitări`.
+
+După publicare, efectuează un test controlat cu date de test, confirmă că apare un singur rând în `Mesaje contact` și că rezervările continuă să fie sincronizate în `Solicitări`. Abia după această verificare setează `CONTACT_REGISTRY_VERIFIED=true`, apoi activează `CONTACT_REGISTRY_ENABLED=true`. Dacă testul nu reușește, lasă ambele valori `false`; trimiterea e-mailului și registrul sunt componente distincte.
 
 ## Sincronizare și editare manuală
 

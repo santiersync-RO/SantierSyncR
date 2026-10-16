@@ -49,6 +49,10 @@ test("valid request returns 200 only after provider acceptance", async () => {
 test("invalid input, missing configuration, origin mismatch, oversized body, and honeypot are rejected", async () => {
   let setup = loadRoute();
   assert.equal((await setup.post(request(submission({ name: "" })))).status, 400);
+  assert.equal((await setup.post(request(submission({ email: "invalid-email" })))).status, 400);
+  assert.equal((await setup.post(request(submission({ message: "x".repeat(1501) })))).status, 400);
+  assert.equal((await setup.post(request(submission({ company: "x".repeat(121) })))).status, 400);
+  assert.equal(setup.calls.email, 0);
   setup = loadRoute({ enabled: false });
   assert.equal((await setup.post(request(submission()))).status, 503);
   setup = loadRoute();
