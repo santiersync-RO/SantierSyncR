@@ -46,7 +46,14 @@ export default function ConfidentialitatePage() {
         <p>Răspuns la solicitare: {legalConfig.requestBasis}. Securitate și prevenirea abuzului: {legalConfig.securityBasis}.</p>
 
         <h2>Furnizori și acces</h2>
-        <p>{legalConfig.processorsPolicy}</p>
+        <p>
+          {legalConfig.processorsPolicy} Consentmanager furnizează bannerul și centrul de preferințe și primește
+          date tehnice necesare afișării bannerului și înregistrării opțiunilor. Dacă alegi măsurarea statistică,
+          site-ul încarcă Google Analytics 4, furnizat de Google, pentru statistici despre utilizarea paginilor.
+          Datele pot include adresa paginii, titlul, navigarea și identificatori online. Site-ul folosește Analytics
+          pentru statistici de vizite, nu pentru publicitate. Informații despre prelucrarea Google sunt disponibile în{" "}
+          <a href="https://policies.google.com/privacy" rel="noreferrer">Politica de confidențialitate Google</a>.
+        </p>
 
         <h2>Păstrarea datelor</h2>
         <p>{legalConfig.retentionPolicy}</p>
@@ -61,7 +68,21 @@ export default function ConfidentialitatePage() {
         </p>
 
         <h2>Tehnologii și stocare</h2>
-        <p>{legalConfig.storagePolicy}</p>
+        <p>
+          {legalConfig.storagePolicy} Consentmanager gestionează interfața și starea alegerii; site-ul nu păstrează
+          separat o preferință proprie. Tehnologiile și perioada de păstrare a alegerii depind de configurația
+          Consentmanager. Google Analytics se încarcă numai după alegerea și acordul pentru măsurarea statistică.
+          Dacă este permis, Google Analytics
+          poate folosi cookie-uri proprii precum _ga și _ga_* pentru a măsura utilizarea site-ului. Implementarea
+          creează cookie-uri GA numai după acel acord; cookie-uri existente din utilizări anterioare pot rămâne până
+          la alegerea refuzului. Poți deschide oricând „Preferințe cookies”; refuzul sau retragerea oprește măsurarea
+          pe acest site și șterge cookie-urile Google Analytics accesibile pe domeniul curent. Retragerea nu șterge
+          datele deja primite de Google. Perioada de păstrare a datelor Analytics depinde de setările Google Analytics.
+        </p>
+        <p>
+          Formularul pregătește un mesaj în aplicația ta de e-mail. Numele, adresa de e-mail și textul completat
+          nu sunt trimise ca date de analiză de către site.
+        </p>
         {!legalConfig.reviewed && (
           <p>Lista trebuie să corespundă tehnologiilor constatate efectiv în browser și la furnizori; nu presupune că nu există cookies sau alte forme de stocare.</p>
         )}

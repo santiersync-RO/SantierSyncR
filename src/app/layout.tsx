@@ -5,9 +5,37 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SanityPreview from "@/components/SanityPreview";
+import AnalyticsCmp from "@/components/AnalyticsCmp";
 import { siteConfig } from "@/config/site";
 import { legalConfig } from "@/content/legal.ro";
 import { getDraftSiteContent, getSiteContent } from "@/lib/sanity.server";
+
+const CONSENT_MANAGER_HEAD = `
+<script
+  type="text/javascript"
+  data-cmp-ab="1"
+  src="https://cdn.consentmanager.net/delivery/autoblocking/8b91739da2f4c.js"
+  data-cmp-host="c.delivery.consentmanager.net"
+  data-cmp-cdn="cdn.consentmanager.net"
+  data-cmp-codesrc="16"
+></script>
+<script type="text/javascript">
+(function (w) {
+  var q = w.dataLayer = w.dataLayer || [];
+  var hasConsent = Array.prototype.some.call(q, function (item) {
+    return item && item[0] === "consent" && (item[1] === "default" || item[1] === "update");
+  });
+  w.gtag = w.gtag || function () { q.push(arguments); };
+  if (!hasConsent) {
+    w.gtag("consent", "default", {
+      analytics_storage: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied"
+    });
+  }
+})(window);
+</script>`;
 
 export async function generateMetadata(): Promise<Metadata> {
   const draft = await draftMode();
@@ -55,6 +83,20 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const draft = await draftMode();
+  const configuredMeasurementId = process.env.GA_MEASUREMENT_ID;
+  const measurementId = configuredMeasurementId === undefined
+    ? "G-LGQ4TNEBZV"
+    : configuredMeasurementId.trim();
+  const measurementIdIsValid = /^G-[A-Z0-9]+$/.test(measurementId);
+  const localTestingAllowed =
+    process.env.NODE_ENV !== "production" &&
+    process.env.GA_ALLOW_LOCAL_TESTING?.trim().toLowerCase() === "true";
+  const cmpEnabled =
+    siteConfig.deploymentStage === "live" &&
+    !draft.isEnabled &&
+    process.env.VERCEL_ENV !== "preview" &&
+    (process.env.NODE_ENV === "production" || localTestingAllowed);
+  const analyticsEnabled = measurementIdIsValid && cmpEnabled;
   const content = await (draft.isEnabled ? getDraftSiteContent() : getSiteContent());
   const organization = {
     "@context": "https://schema.org",
@@ -74,9 +116,20 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
   return (
     <html lang="ro">
+      {/* Next flushes head chunks before script resources; keep the synchronous autoblocker first in trusted static head HTML. */}
+      <head
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: cmpEnabled ? CONSENT_MANAGER_HEAD : "" }}
+      />
       <body>
         <Header navigation={content.home.navigation} logo={content.branding.logo} />
         {children}
+        <AnalyticsCmp
+          enabled={cmpEnabled}
+          analyticsEnabled={analyticsEnabled}
+          localTestingAllowed={localTestingAllowed}
+          measurementId={measurementId}
+        />
         {draft.isEnabled && <SanityPreview />}
         {draft.isEnabled && (
           <aside style={{ position: "fixed", right: 16, bottom: 16, zIndex: 30, display: "flex", alignItems: "center", gap: 12, padding: "9px 13px", border: "1px solid #c2410c", background: "#fff7ed", color: "#7c2d12", fontSize: 13, lineHeight: 1.3, boxShadow: "0 3px 14px rgb(21 45 75 / 14%)" }}>

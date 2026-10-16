@@ -1,0 +1,35 @@
+.root {
+  position: fixed;
+  z-index: 40;
+  right: 16px;
+  bottom: 16px;
+}
+
+.preferences {
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 2px solid #152d4b;
+  color: #fff;
+  background: #152d4b;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 14px rgb(21 45 75 / 20%);
+}
+
+.preferences:hover {
+  border-color: #f86619;
+  background: #b54409;
+}
+
+.preferences:focus-visible {
+  outline: 3px solid #f86619;
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .root {
+    right: 12px;
+    bottom: 12px;
+  }
+}

@@ -22,6 +22,8 @@ Producția se blochează dacă lipsesc identitatea și datele aplicabile operato
 
 Ghidurile de configurare și de testare sunt în [docs/CONFIGURARE.md](docs/CONFIGURARE.md) și [docs/TESTARE-MANUALA.md](docs/TESTARE-MANUALA.md). Păstrează un deployment anterior verificat pentru rollback; după rollback repetă verificarea paginii, linkului de email, paginilor juridice și indexării.
 
+Consentmanager autoblocking și integrarea directă GA4 sunt descrise în [docs/GA4.md](docs/GA4.md). Înainte de activare, proprietarul trebuie să confirme configurarea domeniului CMP, furnizorul Google Analytics `s26`, Google Consent Mode, setările fără reclame și dezactivarea „Enhanced measurement”; lista din ghid nu a fost încă verificată manual. Google Tag Manager și conversiile nu sunt configurate.
+
 ## Versiuni locale
 
 Conținutul public se editează din [Sanity Studio](https://santiersync-ro.sanity.studio), fără un deploy nou. Ghidul de editare, previzualizare și backup este în [docs/CMS-SANITY.md](docs/CMS-SANITY.md). Codul și macheta rămân în Git; backupurile conținutului CMS se păstrează separat, local.

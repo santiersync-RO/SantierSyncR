@@ -28,7 +28,7 @@ const studioAncestors = trustedStudioAncestors();
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   async headers() {
-    const scriptSources = ["'self'", "'unsafe-inline'", "https://challenges.cloudflare.com"];
+    const scriptSources = ["'self'", "'unsafe-inline'", "https://challenges.cloudflare.com", "https://www.googletagmanager.com", "https://*.consentmanager.net"];
     if (process.env.NODE_ENV === "development") scriptSources.push("'unsafe-eval'");
 
     return [
@@ -47,11 +47,11 @@ const nextConfig: NextConfig = {
             value: [
               `default-src 'self'`,
               `script-src ${scriptSources.join(" ")}`,
-              `style-src 'self' 'unsafe-inline'`,
-              `img-src 'self' data: blob: https://cdn.sanity.io`,
-              `font-src 'self' data:`,
-              `connect-src 'self' https://challenges.cloudflare.com`,
-              `frame-src https://challenges.cloudflare.com`,
+              `style-src 'self' 'unsafe-inline' https://*.consentmanager.net`,
+              `img-src 'self' data: blob: https://cdn.sanity.io https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://*.consentmanager.net`,
+              `font-src 'self' data: https://*.consentmanager.net`,
+              `connect-src 'self' https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://www.google.com https://*.consentmanager.net`,
+              `frame-src https://challenges.cloudflare.com https://*.consentmanager.net`,
               `base-uri 'self'`,
               `form-action 'self'`,
               `object-src 'none'`,
