@@ -95,7 +95,7 @@
   font-weight: 650;
   line-height: 1.2;
   text-decoration: none;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .navCta:hover {
@@ -193,6 +193,7 @@
 
   .navCta {
     justify-content: space-between;
+    width: 100%;
     margin-top: 8px;
   }
 }
@@ -203,8 +204,16 @@
   }
 
   .logoCrop {
-    transform: scale(0.85);
-    transform-origin: left center;
+    flex: 0 0 188px;
+    width: 188px;
+    height: 44.4px;
+  }
+
+  .logoCrop img {
+    top: -71.73%;
+    left: -7.32%;
+    width: 114.9%;
+    height: auto;
   }
 
   .logoContain {

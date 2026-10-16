@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SanityPreview from "@/components/SanityPreview";
 import AnalyticsCmp from "@/components/AnalyticsCmp";
-import { siteConfig } from "@/config/site";
+import { siteConfig, siteMetadata as configuredSiteMetadata } from "@/config/site";
 import { bookingConfig } from "@/config/booking";
 import { legalConfig } from "@/content/legal.ro";
 import { getDraftSiteContent, getSiteContent } from "@/lib/sanity.server";
@@ -40,37 +40,36 @@ const CONSENT_MANAGER_HEAD = `
 
 export async function generateMetadata(): Promise<Metadata> {
   const draft = await draftMode();
-  const content = await (draft.isEnabled ? getDraftSiteContent() : getSiteContent());
-  const siteMetadata = content.seo;
+  const indexingReady = siteConfig.publicIndexingEnabled && !draft.isEnabled;
 
   return {
     metadataBase: new URL(siteConfig.siteUrl),
     title: {
-      default: siteMetadata.title,
+      default: configuredSiteMetadata.title,
       template: "%s | ȘantierSync",
     },
-    description: siteMetadata.description,
+    description: configuredSiteMetadata.description,
     applicationName: "ȘantierSync",
-    alternates: siteConfig.releaseReady
+    alternates: indexingReady
       ? { canonical: siteConfig.canonicalOrigin }
       : undefined,
     openGraph: {
       type: "website",
       locale: "ro_RO",
       siteName: "ȘantierSync",
-      title: siteMetadata.openGraphTitle,
-      description: siteMetadata.openGraphDescription,
-      ...(siteConfig.releaseReady
+      title: configuredSiteMetadata.openGraphTitle,
+      description: configuredSiteMetadata.openGraphDescription,
+      ...(indexingReady
         ? { url: siteConfig.canonicalOrigin, images: ["/opengraph-image"] }
         : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: siteMetadata.openGraphTitle,
-      description: siteMetadata.openGraphDescription,
-      ...(siteConfig.releaseReady ? { images: ["/opengraph-image"] } : {}),
+      title: configuredSiteMetadata.openGraphTitle,
+      description: configuredSiteMetadata.openGraphDescription,
+      ...(indexingReady ? { images: ["/opengraph-image"] } : {}),
     },
-    robots: siteConfig.releaseReady && !draft.isEnabled
+    robots: indexingReady
       ? { index: true, follow: true }
       : { index: false, follow: false, noarchive: true },
   };
@@ -116,7 +115,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   };
 
   return (
-    <html lang="ro">
+    <html lang="ro" data-scroll-behavior="smooth">
       {/* Next flushes head chunks before script resources; keep the synchronous autoblocker first in trusted static head HTML. */}
       <head
         suppressHydrationWarning

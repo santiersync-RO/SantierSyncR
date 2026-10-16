@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./AnalyticsCmp.module.css";
 
@@ -16,7 +16,7 @@ declare global {
   interface Window {
     __cmp?: CMP;
     gtag?: (...args: unknown[]) => void;
-    dataLayer?: IArguments[];
+    dataLayer?: unknown[][];
     [key: `ga-disable-${string}`]: boolean | undefined;
     __santierSyncGaInitialized?: string;
   }
@@ -62,6 +62,18 @@ function pageLocation(path: string): string {
   return `${safe.origin}${safe.pathname}`;
 }
 
+function subscribeHydration(): () => void {
+  return () => undefined;
+}
+
+function getHydratedSnapshot(): boolean {
+  return true;
+}
+
+function getServerHydrationSnapshot(): boolean {
+  return false;
+}
+
 function pageReferrer(previousPath: string | null): string {
   if (previousPath) return pageLocation(previousPath);
   try {
@@ -94,7 +106,11 @@ export default function AnalyticsCmp({
   measurementId: string;
 }) {
   const pathname = usePathname() || "/";
-  const [hydrated, setHydrated] = useState(false);
+  const hydrated = useSyncExternalStore(
+    subscribeHydration,
+    getHydratedSnapshot,
+    getServerHydrationSnapshot,
+  );
   const [analyticsConsent, setAnalyticsConsent] = useState(false);
   const [retry, setRetry] = useState(0);
   const consentRef = useRef(false);
@@ -106,7 +122,6 @@ export default function AnalyticsCmp({
   const started = useRef(false);
   const mounted = useRef(false);
   const reloadQueued = useRef(false);
-  currentPath.current = pathname;
 
   const allowedHost =
     typeof window !== "undefined" &&
@@ -148,8 +163,8 @@ export default function AnalyticsCmp({
   );
 
   useEffect(() => {
-    setHydrated(true);
-  }, []);
+    currentPath.current = pathname;
+  }, [pathname]);
 
   useEffect(() => {
     if (!enabled || !allowedHost || !analyticsEnabled) {
@@ -266,10 +281,7 @@ export default function AnalyticsCmp({
   useEffect(() => {
     if (!enabled || !allowedHost || !analyticsConsent || !consentRef.current || !listenersReady.current) return;
     if (hasAnalyticsConsent() !== true) {
-      consentRef.current = false;
-      setAnalyticsConsent(false);
-      window[`ga-disable-${measurementId}`] = true;
-      if (started.current) removeAnalyticsCookies();
+      syncCMPState();
       return;
     }
     if (scriptLoaded.current) {
@@ -279,9 +291,9 @@ export default function AnalyticsCmp({
     if (scriptPending.current) return;
 
     window.dataLayer = window.dataLayer ?? [];
-    window.gtag = window.gtag ?? function gtag() {
-      window.dataLayer?.push(arguments);
-    };
+    window.gtag = window.gtag ?? ((...args: unknown[]) => {
+      window.dataLayer?.push(args);
+    });
 
     const script = document.createElement("script");
     script.async = true;
@@ -321,7 +333,7 @@ export default function AnalyticsCmp({
       return;
     }
     document.head.appendChild(script);
-  }, [allowedHost, analyticsConsent, analyticsEnabled, enabled, measurementId, pathname, retry, trackCurrentPath]);
+  }, [allowedHost, analyticsConsent, analyticsEnabled, enabled, measurementId, pathname, retry, syncCMPState, trackCurrentPath]);
 
   const openPreferences = useCallback(() => {
     getCMP()?.("showScreenAdvanced");

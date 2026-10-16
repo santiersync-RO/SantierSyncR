@@ -2,11 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import type { SiteContent } from "@/content/site-content";
 import styles from "./Footer.module.css";
-
-const legalRoutes = new Set(["/confidentialitate", "/informatii-legale"]);
 
 type FooterProps = {
   footer: SiteContent["footer"];
@@ -15,8 +12,6 @@ type FooterProps = {
 };
 
 export default function Footer({ footer, publicEmail, logo }: FooterProps) {
-  const pathname = usePathname();
-
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.inner}`}>
@@ -40,12 +35,9 @@ export default function Footer({ footer, publicEmail, logo }: FooterProps) {
           <p className={styles.copyright}>{footer.copyright}</p>
         </div>
 
-        {pathname && legalRoutes.has(pathname) && (
-          <nav className={styles.legalLinks} aria-label="Linkuri legale">
-            <Link href="/confidentialitate">Politica de confidențialitate</Link>
-            <Link href="/informatii-legale">Informații legale</Link>
-          </nav>
-        )}
+        <nav className={styles.legalLinks} aria-label="Linkuri legale">
+          <Link href="/confidentialitate">Politica de confidențialitate</Link>
+        </nav>
 
         <div className={styles.bottomRow}>
           <p className={styles.location}>{footer.location}</p>

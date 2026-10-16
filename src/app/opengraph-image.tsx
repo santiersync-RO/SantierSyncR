@@ -4,7 +4,7 @@ import path from "node:path";
 import { siteMetadata } from "@/config/site";
 
 /* eslint @next/next/no-img-element: off -- ImageResponse renders a pre-existing raster logo; next/image is unsupported in this metadata renderer. */
-export const alt = "ȘantierSync — Mai puțin haos. Mai multă treabă dusă la capăt.";
+export const alt = "ȘantierSync — Organizare pentru construcții, în Cluj";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

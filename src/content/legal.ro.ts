@@ -22,4 +22,4 @@ export const legalConfig = {
 } as const;
 
 export const legalDraftNotice =
-  "Document de lucru pentru preview. Operatorul și practicile de prelucrare nu au fost confirmate. Nu folosi această pagină drept informare finală. Completează și revizuiește toate datele înainte de publicare.";
+  "Informare provizorie, publicată pentru transparență. Identitatea operatorului și unele practici de prelucrare sunt încă în curs de verificare; această pagină nu este informarea finală. Detaliile lipsă vor fi publicate după confirmare.";

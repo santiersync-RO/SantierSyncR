@@ -1,11 +1,7 @@
 import type { NextConfig } from "next";
+import { isPublicIndexingEnabled } from "./src/config/indexing-policy.ts";
 
-const deploymentStage = process.env.DEPLOYMENT_STAGE?.trim().toLowerCase() || "live";
-const isApprovedProduction =
-  deploymentStage === "live" &&
-  process.env.VERCEL_ENV === "production" &&
-  process.env.RELEASE_APPROVED === "true" &&
-  process.env.LEGAL_REVIEWED === "true";
+const allowPublicIndexing = isPublicIndexingEnabled(process.env);
 
 function trustedStudioAncestors(): string[] | null {
   try {
@@ -60,10 +56,14 @@ const nextConfig: NextConfig = {
                 : `frame-ancestors 'none'`,
             ].join("; "),
           },
-          ...(!isApprovedProduction
+          ...(!allowPublicIndexing
             ? [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }]
             : []),
         ],
+      },
+      {
+        source: "/api/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }],
       },
     ];
   },

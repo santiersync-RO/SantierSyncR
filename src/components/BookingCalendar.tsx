@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { calendarLinks } from "@/lib/booking-links";
+import { trackSiteEvent } from "@/lib/analytics-events";
 import styles from "./BookingCalendar.module.css";
 
 type BookingCalendarProps = {
@@ -8,41 +11,13 @@ type BookingCalendarProps = {
   calLink: string;
 };
 
-function getEmbedUrl(value: string): string | null {
-  try {
-    const url = new URL(value);
-    if (
-      url.protocol !== "https:" || url.hostname !== "cal.com" || url.port ||
-      url.username || url.password || url.search || url.hash ||
-      !/^\/santiersyncro\/[a-zA-Z0-9_-]+\/?$/.test(url.pathname)
-    ) return null;
-    url.searchParams.set("embed", "true");
-    return url.toString();
-  } catch {
-    return null;
-  }
-}
-
-function getPublicCalUrl(value: string): string | null {
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" && url.hostname === "cal.com" && !url.port &&
-      !url.username && !url.password && !url.search && !url.hash &&
-      /^\/santiersyncro\/[a-zA-Z0-9_-]+\/?$/.test(url.pathname)
-      ? url.toString()
-      : null;
-  } catch {
-    return null;
-  }
-}
-
 export default function BookingCalendar({ eventUrl, calLink }: BookingCalendarProps) {
   const [opened, setOpened] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [showDelayNotice, setShowDelayNotice] = useState(false);
   const [frameError, setFrameError] = useState(false);
-  const embedUrl = getEmbedUrl(eventUrl);
-  const publicCalUrl = getPublicCalUrl(calLink);
+  const embedUrl = calendarLinks(eventUrl)?.embed;
+  const publicCalUrl = calendarLinks(calLink)?.direct;
 
   useEffect(() => {
     if (!opened || loaded || frameError) return;
@@ -56,8 +31,9 @@ export default function BookingCalendar({ eventUrl, calLink }: BookingCalendarPr
 
   return (
     <div className={styles.calendar}>
+      <p className={styles.privacy}>La deschidere se încarcă serviciul Cal.com. Datele rezervării sunt folosite pentru discuție și revenire. <Link href="/confidentialitate">Despre datele tale</Link>.</p>
       {!opened ? (
-        <button className={styles.openButton} type="button" onClick={() => setOpened(true)}>
+        <button className={styles.openButton} type="button" onClick={() => { setOpened(true); trackSiteEvent("calendar_open"); }}>
           Alege ziua și ora <span aria-hidden="true">→</span>
         </button>
       ) : (
@@ -71,7 +47,7 @@ export default function BookingCalendar({ eventUrl, calLink }: BookingCalendarPr
             onLoad={() => setLoaded(true)}
             onError={() => setFrameError(true)}
           />
-          {(showDelayNotice || frameError) && !loaded && (
+          {(frameError || (showDelayNotice && !loaded)) && (
             <p className={styles.fallback} role="status">
               Dacă calendarul nu apare, {publicCalUrl ? <><a href={publicCalUrl} target="_blank" rel="noreferrer">deschide-l direct pe Cal.com</a> sau scrie-ne pentru a stabili un moment.</> : "scrie-ne pentru a stabili un moment."}
             </p>
@@ -79,7 +55,7 @@ export default function BookingCalendar({ eventUrl, calLink }: BookingCalendarPr
         </>
       )}
       {publicCalUrl && <p className={styles.externalLink}>Preferi calendarul direct? <a href={publicCalUrl} target="_blank" rel="noreferrer">Deschide Cal.com</a></p>}
-      <p className={styles.privacy}>Cal.com gestionează rezervarea. Detaliile acesteia se sincronizează cu Google Calendar și sunt păstrate în registrul privat Google Sheets pentru revenirea după discuție.</p>
+      <p className={styles.privacy}>Orele sunt afișate în fusul ales în calendar. Poți modifica fusul și formatul 12h/24h înainte să alegi ora.</p>
     </div>
   );
 }

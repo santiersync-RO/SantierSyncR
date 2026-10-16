@@ -4,7 +4,7 @@ Site-ul folosește tagul Google Analytics 4 direct prin `gtag.js`, cu ID-ul impl
 
 ## Activare și limite
 
-Scriptul autoblocking Consentmanager și componenta de legătură sunt disponibile numai când `DEPLOYMENT_STAGE=live`, nu este activă previzualizarea Sanity, deploymentul nu este Vercel Preview și mediul este Production. Pentru localhost în development, sunt necesare `GA_ALLOW_LOCAL_TESTING=true`, `NODE_ENV` diferit de `production` și gazda `localhost` sau `127.0.0.1`. Setarea este `false` implicit; revino la `false` după verificarea locală. Demo, preview și draft rămân excluse.
+Scriptul autoblocking Consentmanager și componenta de legătură sunt disponibile numai când `DEPLOYMENT_STAGE=live`, nu este activă previzualizarea Sanity, deploymentul nu este Vercel Preview și mediul este Production. Pentru localhost în development, sunt necesare `GA_ALLOW_LOCAL_TESTING=true`, `NODE_ENV` diferit de `production` și gazda `localhost` sau `127.0.0.1`. Setarea este `false` implicit; revino la `false` după verificarea locală. Demo, preview și draft rămân excluse. În configurația curentă `DEPLOYMENT_STAGE=demo`, CMP și GA sunt dezactivate în producție. Activarea indexării publice nu schimbă această condiție. Nu au fost schimbate credențiale sau flaguri GA/CMP.
 
 CMP-ul este încărcat independent de validitatea ID-ului GA. `GA_MEASUREMENT_ID` poate suprascrie ID-ul implicit; formatul acceptat este `G-` urmat de litere mari sau cifre. O valoare explicită invalidă dezactivează numai Google Analytics. ID-ul de măsurare este public, nu un secret.
 
@@ -26,9 +26,13 @@ Ghidurile oficiale pentru [instalarea directă gtag.js](https://developers.googl
 
 ## Evenimente și date
 
-După confirmarea consimțământului, codul trimite un `page_view` la încărcarea rutei curente și la fiecare schimbare de rută Next.js, o singură dată pe cale. `page_location` și `page_referrer` sunt limitate la origine și cale; query string, fragmentul și credențialele URL nu sunt trimise. Parametrii UTM și GCLID nu sunt păstrați, deci atribuirea campaniilor nu este configurată; aceasta necesită o decizie și configurare separată înainte de campanii. Nu sunt configurate conversii. Formularul `mailto:` deschide aplicația de e-mail a vizitatorului și nu transmite formularul către endpointul site-ului.
+După confirmarea consimțământului, codul trimite un `page_view` la încărcarea rutei curente și la fiecare schimbare de rută Next.js, o singură dată pe cale. `page_location` și `page_referrer` sunt limitate la origine și cale; query string, fragmentul și credențialele URL nu sunt trimise. Parametrii UTM și GCLID nu sunt păstrați, deci atribuirea campaniilor nu este configurată; aceasta necesită o decizie și configurare separată înainte de campanii. Evenimentele personalizate de mai jos nu sunt configurate drept conversii în GA4. Formularul folosește API-ul numai dacă este activat cu toate credențialele și protecțiile necesare; altfel butonul deschide aplicația de e-mail și mesajul nu ajunge la endpointul site-ului.
 
 La refuz sau retragere, flagul Google este dezactivat, cookie-urile Analytics accesibile pe domeniul curent sunt șterse, iar dacă CMP confirmă o alegere salvată, pagina se reîncarcă pentru a opri trackerul deja încărcat. Cookie-uri GA existente din utilizări anterioare pot fi prezente înainte de acord și sunt șterse la refuz când sunt accesibile. Retragerea nu șterge datele deja primite de Google. CMP gestionează separat propria persistență; verifică setarea ei reală.
+
+Evenimentele de produs disponibile sunt `calendar_open` și `contact_submit_success`. Se trimit numai dacă `consentStatus.consentExists === true`, `vendorConsents.s26 === true`, trackerul GA a fost inițializat, `gtag` există și dezactivarea GA este `false`. Un eveniment declanșat înainte de acord sau când starea CMP nu poate fi citită este eliminat, nu pus în coadă pentru trimitere ulterioară. Parametrii sunt limitați la numele evenimentului și o cale statică (`/` sau `/programare`); nu se transmit valori din formular, e-mailuri, referer, query string, hash sau identificatori de cerere.
+
+Deschiderea calendarului înregistrează numai `calendar_open`; nu înseamnă rezervare confirmată. Webhook-ul Cal.com semnat este sursa operațională pentru o rezervare confirmată, însă nu există o legătură verificată între webhook și un eveniment GA4 de conversie. Nu se trimite `booking_confirmed` și nu sunt configurate conversii GA4. Trimiterea formularului înregistrează `contact_submit_success` numai după succesul real al endpointului.
 
 ## Listă manuală pentru proprietar
 

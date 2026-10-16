@@ -8,14 +8,14 @@ Deschide [versiunea locală](http://127.0.0.1:3000) și fă doar această verifi
 2. Verifică logo-ul și textele celor șase secțiuni. Spune dacă oferta centrală și felul în care este explicată reprezintă corect ce vrei să prezinți.
 3. Deschide meniul și încearcă legăturile „Ce facem”, „Cum lucrăm” și „Despre noi”, apoi CTA-ul „Hai să vorbim”. Notează ce nu te duce unde te așteptai.
 4. Parcurge fiecare dintre cele șase secțiuni. Verifică dacă lipsește ceva important sau dacă apare încă un bloc FAQ ori o ofertă separată de website.
-5. Verifică legătura de email: aceasta pregătește un mesaj către `santiersync@gmail.com` în aplicația de email aleasă de dispozitiv. Website-ul nu trimite mesajul singur și nu promite livrarea lui.
-6. Deschide linkurile către paginile juridice. Sunt proiecte în lucru pentru preview, nu informări finale.
+5. Verifică formularul de contact. În producția curentă, până la configurarea credențialelor, formularul rămâne dezactivat și oferă e-mailul public ca alternativă; site-ul nu transmite valorile introduse. Când API-ul este activat într-un mediu de test, verifică trimiterea prin formular separat.
+6. Deschide politica de confidențialitate: versiunea disponibilă public este factuală, provizorie și `noindex` cât timp revizuirea juridică nu este completă. Pagina cu informații legale rămâne ascunsă până la confirmarea datelor operatorului.
 
 Trimite-mi un raport simplu pentru orice observație: **pagina/modul, ce ai făcut, ce ai observat, ce ai așteptat**. Restul checklistului de mai jos este pentru etapele de integrare și lansare; nu trebuie parcurs acum.
 
 Acest checklist este pentru proprietarul site-ului. Starea curentă a furnizorilor externi este **neverificată**; nu considera o simulare drept test de livrare reală. Notează data, URL-ul/commitul, rezultatul și dovada fără a păstra date personale ale vizitatorilor.
 
-Pagina curentă folosește o legătură `mailto:`; nu afișează și nu activează formularul site-ului. Endpointul API păstrat în repository nu este legat de homepage și nu este configurat. Verificările tehnice de mai jos pentru formular, Turnstile, WAF și Resend sunt pentru o etapă viitoare, după o decizie separată; nu presupun că integrarea există acum.
+Homepage-ul folosește formularul direct al aplicației când acesta este activat și configurat; formularul de producție rămâne dezactivat până la configurarea și verificarea credențialelor Resend și Turnstile. În starea dezactivată, interfața oferă e-mailul ca alternativă și nu transmite datele completate. Verificările tehnice de mai jos se aplică numai unui mediu în care activarea a fost configurată în mod real.
 
 ## Preview și navigare
 
@@ -29,16 +29,14 @@ Pagina curentă folosește o legătură `mailto:`; nu afișează și nu activeaz
 
 ## Email și accesibilitate
 
-- [ ] Verifică faptul că `mailto:santiersync@gmail.com` deschide compunerea unui email în aplicația configurată pe dispozitiv. Aceasta nu înseamnă că mesajul a fost trimis sau primit.
-- [ ] În etapa de lansare, proprietarul trimite un mesaj de probă din aplicația sa către inboxul real și confirmă primirea; abia atunci setează `MAILBOX_TESTED=true`.
-- [ ] Nu raporta drept activă ori verificată trimiterea prin formular. Endpointul API este neconectat la homepage și păstrat pentru o etapă viitoare.
-- [ ] După aprobarea și configurarea unei integrări viitoare, validează cu câmpuri obligatorii valide și cu numele/telefonul opționale goale.
+- [ ] Verifică faptul că e-mailul alternativ deschide compunerea unui mesaj către inboxul public. Aceasta nu înseamnă că mesajul a fost trimis sau primit.
+- [ ] Proprietarul trimite manual un mesaj de probă către inboxul real și confirmă primirea; abia atunci setează `MAILBOX_TESTED=true`. Succesul unui răspuns API nu înlocuiește această probă.
+- [ ] Până la configurarea furnizorilor, nu raporta drept activă trimiterea API în producție. Când API-ul este activat într-un mediu de test, validează cu câmpuri obligatorii valide și cu numele/telefonul opționale goale.
 - [ ] Verifică email invalid, câmpuri goale, mesaj prea scurt/prea lung, corp mare, honeypot, origin nepermis și token Turnstile absent, invalid, expirat sau refolosit. Niciun caz respins nu trimite email.
 - [ ] Confirmă verificarea tokenului pe server și hostname-ul exact; după o eroare utilizatorul poate cere un token nou.
 - [ ] Verifică dublu-click/retry, furnizor indisponibil, timeout, offline, răspuns non-JSON și chei lipsă. Niciun eșec nu afișează succes; datele introduse pot fi corectate/retrimise.
-- [ ] Confirmă WAF-ul numai pe endpointul de contact și fără upload, destinatar controlabil de vizitator sau date personale în loguri.
-- [ ] Folosește NVDA sau VoiceOver pentru meniu, secțiuni și linkul de email; verificările formularului se aplică doar după integrarea viitoare.
-- [ ] Pentru o integrare API viitoare, verificațiile ei de trimitere nu înlocuiesc separat proba de email pregătit prin `mailto:` cerută de `MAILBOX_TESTED`.
+- [ ] WAF este o măsură suplimentară opțională; dacă este configurat, verifică faptul că regula se aplică numai endpointului de contact și că nu apar date personale în loguri.
+- [ ] Folosește NVDA sau VoiceOver pentru meniu, secțiuni, formularul activ și linkul alternativ de e-mail.
 
 ## Juridic, SEO și publicare
 
@@ -48,6 +46,6 @@ Pagina curentă folosește o legătură `mailto:`; nu afișează și nu activeaz
 - [ ] În producția aprobată, inspectează canonical, titluri/descrieri specifice, OG la 1.200×630, favicon, sitemap și robots. Sitemap-ul include doar homepage și paginile publicabile.
 - [ ] Verifică HTTPS și redirectul www/apex pe domeniul final, headers de securitate și lipsa cheilor în Git, HTML, JavaScript client și răspunsuri de eroare.
 - [ ] Verifică CSP în preview pentru hidratarea Next.js și Turnstile: resursele externe sunt limitate la Cloudflare Turnstile, fără wildcard global. Testează din nou după fiecare integrare externă.
-- [ ] Pentru o integrare API viitoare, confirmă în Vercel WAF că limita configurată se aplică doar endpointului de contact. Această verificare nu este pentru versiunea actuală.
+- [ ] Dacă există o regulă WAF, confirmă în Vercel că limita se aplică doar endpointului de contact; WAF nu este obligatoriu pentru activarea API-ului.
 - [ ] Rulează Lighthouse mobile de trei ori și păstrează medianele: țintă Performance ≥90, Accessibility ≥95, SEO ≥95, LCP ≤2,5s și CLS ≤0,1. Acestea sunt praguri de verificare, nu promisiuni. Urmărește INP din date reale când există trafic suficient.
 - [ ] După confirmarea checklist-ului, verifică din nou statusul build-ului/deployment-ului și o trimitere reală pe domeniul public. Dacă ceva eșuează, rollback la deployment-ul anterior verificat și repetă verificările relevante.

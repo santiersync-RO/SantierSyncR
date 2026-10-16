@@ -46,6 +46,15 @@ function doPost(e) {
     }
 
     const event = JSON.parse(envelope.data);
+    if (isContactEvent(event)) {
+      const lock = LockService.getScriptLock();
+      if (!lock.tryLock(8000)) return registryJson({ ok: false, code: "busy" });
+      try {
+        return registryJson({ ok: true, result: upsertContactEvent(spreadsheetId, event) });
+      } finally {
+        lock.releaseLock();
+      }
+    }
     if (!validateRegistryEvent(event)) return registryJson({ ok: false, code: "invalid" });
     const lock = LockService.getScriptLock();
     if (!lock.tryLock(8000)) return registryJson({ ok: false, code: "busy" });
@@ -58,6 +67,51 @@ function doPost(e) {
   } catch (_error) {
     return registryJson({ ok: false, code: "unavailable" });
   }
+}
+
+function isContactEvent(event) {
+  return isPlainObject(event) && event.type === "CONTACT_SUBMITTED";
+}
+
+function validateContactEvent(event) {
+  const allowed = ["type", "requestId", "providerId", "createdAt", "name", "email", "company", "message"];
+  return isContactEvent(event) && Object.keys(event).length === allowed.length &&
+    Object.keys(event).every(function (key) { return allowed.indexOf(key) >= 0; }) &&
+    /^[a-f0-9]{64}$/.test(event.requestId) && /^[a-f0-9]{64}$/.test(event.providerId) &&
+    validDate(event.createdAt) && safeText(event.name, 120) && safeText(event.email, 254) &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(event.email) &&
+    (event.company === "" || safeText(event.company, 120)) && contactMessageText(event.message);
+}
+
+function contactMessageText(value) {
+  return typeof value === "string" && value.length > 0 && value.length <= 1500 && value.trim() === value &&
+    !/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(value);
+}
+
+function upsertContactEvent(spreadsheetId, event) {
+  if (!validateContactEvent(event)) throw new Error("Invalid contact event");
+  const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+  const name = "Mesaje contact";
+  const headers = ["ID solicitare", "Creată la", "Nume", "E-mail", "Firmă", "Mesaj"];
+  let sheet = spreadsheet.getSheetByName(name);
+  if (!sheet) sheet = spreadsheet.insertSheet(name);
+  if (sheet.getLastRow() === 0) {
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
+  }
+  const actual = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
+  if (headers.some(function (header, index) { return actual[index] !== header; })) throw new Error("Contact schema mismatch");
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    const ids = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+    if (ids.some(function (row) { return row[0] === event.requestId; })) return "duplicate";
+  }
+  sheet.getRange(lastRow + 1, 1, 1, headers.length).setValues([[
+    event.requestId, event.createdAt, safeCellValue(event.name), safeCellValue(event.email),
+    safeCellValue(event.company), safeCellValue(event.message)
+  ]]);
+  return "created";
 }
 
 function registryJson(value) {

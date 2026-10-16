@@ -65,10 +65,10 @@ export const defaultSiteContent: SiteContent = {
     unspecifiedCompany: "Nespecificată",
   },
   seo: {
-    title: "ȘantierSync | Mai puțin haos. Mai multă treabă dusă la capăt.",
-    description: "Ajutăm firmele de construcții și instalații să-și pună în ordine cererile de ofertă și munca administrativă — folosind instrumentele pe care le au deja.",
+    title: "ȘantierSync | Cereri și oferte la zi în Cluj",
+    description: "Punem în ordine cererile și ofertele firmelor de construcții și instalații din Cluj. Vezi cine răspunde, ce informații lipsesc și când trebuie revenit la client.",
     openGraphTitle: "Mai puțin haos. Mai multă treabă dusă la capăt.",
-    openGraphDescription: "Organizare pentru munca din teren. Cluj și împrejurimi.",
+    openGraphDescription: "Organizăm cererile și ofertele echipelor de construcții și instalații din Cluj.",
   },
   branding: {
     logo: { url: "/brand/logo-original.png", width: 1774, height: 887, originalCrop: true, alt: "ȘantierSync" },
@@ -132,7 +132,7 @@ const homeSchema = z.unknown().transform(stripSanityMetadata).superRefine((value
   if (!sameShape(value, model)) ctx.addIssue({ code: "custom", message: "Homepage content does not match the required structure." });
   const home = asRecord(value);
   if (!home) return;
-  const exactCounts: Array<[string, number]> = [["services", 5], ["demonstration", 4], ["collaboration", 3]];
+  const exactCounts: Array<[string, number]> = [["services", 5], ["offers", 3], ["demoRequests", 3], ["faq", 5], ["demonstration", 4], ["collaboration", 3]];
   exactCounts.push(["navigation.links", 3], ["hero.stages", 3]);
   for (const [key, count] of exactCounts) {
     const path = key.split(".");
@@ -187,6 +187,35 @@ export const siteContentSchema = z.preprocess(stripSanityMetadata, z.object(site
 }));
 
 export function parseSiteContent(value: unknown): SiteContent {
-  const result = siteContentSchema.safeParse(value);
+  const result = siteContentSchema.safeParse(migrateV1SiteContent(value));
   return result.success ? result.data as SiteContent : defaultSiteContent;
+}
+
+/**
+ * Migrate the published v1 singleton in memory when it has the old homepage
+ * shape. This keeps the existing logo, footer, contact details and all other
+ * valid editor copy while adding the v2 package, demo and FAQ fields. Saving
+ * the result from Studio persists the v2 shape; no provider write happens here.
+ */
+function migrateV1SiteContent(value: unknown): unknown {
+  const clean = stripSanityMetadata(value);
+  const root = asRecord(clean);
+  const home = asRecord(root?.home);
+  if (!root || !home || ("offers" in home && "demoRequests" in home && "faq" in home)) return clean;
+  return {
+    ...root,
+    home: {
+      ...home,
+      navigation: { ...asRecord(home.navigation), cta: defaultSiteContent.home.navigation.cta },
+      hero: {
+        ...asRecord(home.hero),
+        description: defaultSiteContent.home.hero.description,
+        primaryCta: defaultSiteContent.home.hero.primaryCta,
+        secondaryCta: defaultSiteContent.home.hero.secondaryCta,
+      },
+      offers: home.offers ?? defaultSiteContent.home.offers,
+      demoRequests: home.demoRequests ?? defaultSiteContent.home.demoRequests,
+      faq: home.faq ?? defaultSiteContent.home.faq,
+    },
+  };
 }

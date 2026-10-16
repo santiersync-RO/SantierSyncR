@@ -27,9 +27,9 @@ Conectarea repository-ului GitHub la Vercel nu a reușit: API-ul a răspuns cu e
 ## Ce face etapa demo
 
 - `releaseReady` rămâne `false`, indiferent de flag-uri de aprobare ori de mediul Vercel.
-- API-ul de contact rămâne dezactivat; formularul pregătește un mesaj `mailto`, care poate fi trimis din aplicația de e-mail a vizitatorului.
-- Pagina principală poate fi vizualizată ca demo; rutele `/confidentialitate` și `/informatii-legale` răspund cu 404 în etapa demo, astfel încât proiectele juridice să nu fie expuse public.
-- Sitemap-ul rămâne gol, iar regulile pentru motoarele de căutare rămân restrictive conform comportamentului de preview.
-- Domeniul `.ro` răspunde HTTP 200 cu TLS valid și rămâne `noindex`. Verificarea manuală a aspectului în browser rămâne la proprietar și nu a fost efectuată; aceste probe tehnice nu reprezintă lansare comercială.
+- Contactul API rămâne dezactivat până când sunt configurate și verificate credențialele Resend și Turnstile; formularul dezactivat oferă e-mailul public ca alternativă și nu transmite valorile completate.
+- Homepage-ul și politica de confidențialitate pot fi accesibile; politica rămâne provizorie și `noindex` până la completarea revizuirii. Ruta `/informatii-legale` rămâne ascunsă până la confirmarea datelor juridice.
+- Indexarea homepage-ului și a paginii `/programare` are un opt-in separat: `PUBLIC_INDEXING_ENABLED=true` funcționează numai pe `VERCEL_ENV=production` cu `SITE_URL=https://santiersync.ro`; preview-ul rămâne noindex.
+- Un raport anterior consemnează HTTP 200, TLS valid și `noindex` pe domeniul `.ro`; starea curentă trebuie reverificată de root în auditul live. Verificarea manuală a aspectului în browser rămâne la proprietar; aceste probe tehnice nu reprezintă lansare comercială.
 
 Pentru trecerea ulterioară la etapa live, elimină `DEPLOYMENT_STAGE=demo` sau setează `live`, apoi completează și verifică independent toate valorile reale cerute de release gate. Nu schimba stadiul doar pentru a ocoli verificările.

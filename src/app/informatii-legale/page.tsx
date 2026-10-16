@@ -6,14 +6,14 @@ import { siteConfig } from "@/config/site";
 export const metadata: Metadata = {
   title: "Informații legale",
   description: "Identificarea operatorului și informații despre serviciile prezentate de ȘantierSync.",
-  alternates: siteConfig.releaseReady
+  alternates: siteConfig.publicIndexingEnabled && siteConfig.legalReady
     ? { canonical: `${siteConfig.canonicalOrigin}/informatii-legale` }
     : undefined,
-  robots: { index: siteConfig.releaseReady, follow: siteConfig.releaseReady, ...(!siteConfig.releaseReady ? { noarchive: true } : {}) },
+  robots: { index: siteConfig.publicIndexingEnabled && siteConfig.legalReady, follow: siteConfig.publicIndexingEnabled && siteConfig.legalReady, ...(!(siteConfig.publicIndexingEnabled && siteConfig.legalReady) ? { noarchive: true } : {}) },
 };
 
 export default function InformatiiLegalePage() {
-  if (siteConfig.deploymentStage === "demo") notFound();
+  if (!siteConfig.legalReady) notFound();
 
   return (
     <main id="continut" tabIndex={-1}>

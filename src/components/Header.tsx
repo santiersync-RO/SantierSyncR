@@ -12,7 +12,7 @@ type HeaderProps = {
   bookingEnabled?: boolean;
 };
 
-export default function Header({ navigation, logo, bookingEnabled = false }: HeaderProps) {
+export default function Header({ navigation, logo }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const menuToggleRef = useRef<HTMLButtonElement>(null);
 
@@ -82,14 +82,9 @@ export default function Header({ navigation, logo, bookingEnabled = false }: Hea
               {label}
             </Link>
           ))}
-          {bookingEnabled && (
-            <Link href="/programare" onClick={closeMenu}>
-              Programează o discuție
-            </Link>
-          )}
           <Link
             className={styles.navCta}
-            href="/#contact"
+            href="/programare"
             onClick={closeMenu}
           >
             <span>{navigation.cta}</span>

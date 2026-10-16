@@ -4,6 +4,10 @@ import { defaultSiteContent, parseSiteContent, siteContentSchema } from "../src/
 
 test("defaults preserve exact copy and meaningful heading spaces", () => {
   assert.deepEqual(parseSiteContent(structuredClone(defaultSiteContent)), defaultSiteContent);
+  assert.equal(defaultSiteContent.home.hero.description, "Punem în ordine cererile și ofertele firmelor de construcții și instalații din Cluj. Vezi cine răspunde, ce informații lipsesc și când trebuie revenit la client.");
+  assert.equal(defaultSiteContent.home.offers[0].price, "Implementare de bază · 1.900 lei");
+  assert.equal(defaultSiteContent.home.faq[0].question, "Trebuie să schimb programele pe care le folosesc?");
+  assert.match(defaultSiteContent.home.demoRequests[0].missing, /Modelul/);
   assert.equal(defaultSiteContent.home.servicesIntro.title[1], "care ");
   assert.equal(defaultSiteContent.home.about.title[1], "celor care ");
 });
@@ -19,9 +23,32 @@ test("valid CMS edits retain text and remove Sanity array metadata", () => {
   assert.deepEqual(result.footer, defaultSiteContent.footer);
 });
 
+test("published v1 singleton migrates to v2 while retaining valid editor-owned fields", () => {
+  const legacy = structuredClone(defaultSiteContent);
+  delete legacy.home.offers;
+  delete legacy.home.demoRequests;
+  delete legacy.home.faq;
+  legacy.footer.slogan = "Text păstrat din Studio";
+  legacy.home.contactIntro.email = "contact@example.ro";
+  legacy.branding.logo.alt = "Logo existent păstrat";
+
+  const migrated = parseSiteContent(legacy);
+  assert.equal(migrated.footer.slogan, "Text păstrat din Studio");
+  assert.equal(migrated.home.contactIntro.email, "contact@example.ro");
+  assert.equal(migrated.branding.logo.alt, "Logo existent păstrat");
+  assert.equal(migrated.home.navigation.cta, "Programează o discuție de 30 min");
+  assert.equal(migrated.home.hero.description, defaultSiteContent.home.hero.description);
+  assert.deepEqual(migrated.home.offers, defaultSiteContent.home.offers);
+  assert.deepEqual(migrated.home.demoRequests, defaultSiteContent.home.demoRequests);
+  assert.deepEqual(migrated.home.faq, defaultSiteContent.home.faq);
+});
+
 test("incomplete content, unsafe navigation and invalid email fall back safely", () => {
   for (const mutate of [
     (value) => value.home.services.pop(),
+    (value) => value.home.offers.pop(),
+    (value) => value.home.demoRequests.pop(),
+    (value) => value.home.faq.pop(),
     (value) => value.home.hero.stages.pop(),
     (value) => value.home.about.paragraphs.pop(),
     (value) => value.home.navigation.links[0].href = "javascript:alert(1)",

@@ -200,6 +200,39 @@ export default defineType({
           ] }],
         }),
         defineField({
+          name: "offers", title: "Pachete propuse", type: "array", validation: (rule) => rule.required().length(3),
+          fieldset: "services",
+          description: "Păstrează cele trei pachete în ordinea afișării; primul este evidențiat ca pilot.",
+          of: [{ type: "object", name: "offer", fields: [
+            defineField({ name: "title", title: "Titlu", type: "string", validation: (rule) => rule.required().max(1200) }),
+            defineField({ name: "description", title: "Descriere scurtă", type: "text", rows: 3, validation: (rule) => rule.required().max(1200) }),
+            defineField({ name: "detail", title: "Ce include", type: "text", rows: 4, validation: (rule) => rule.required().max(1200) }),
+            defineField({ name: "price", title: "Preț / estimare", type: "string", validation: (rule) => rule.required().max(1200) }),
+            defineField({ name: "scope", title: "Limită de scop (doar pilot)", type: "text", rows: 4, validation: (rule) => rule.max(1200) }),
+          ] }],
+        }),
+        defineField({
+          name: "demoRequests", title: "Exemplu de registru · 3 rânduri", type: "array", validation: (rule) => rule.required().length(3),
+          fieldset: "services",
+          description: "Folosește numai date demonstrative, fără informații reale despre clienți.",
+          of: [{ type: "object", name: "demoRequest", fields: [
+            defineField({ name: "work", title: "Lucrare", type: "string", validation: (rule) => rule.required().max(1200) }),
+            defineField({ name: "owner", title: "Responsabil", type: "string", validation: (rule) => rule.required().max(1200) }),
+            defineField({ name: "status", title: "Stadiu", type: "string", validation: (rule) => rule.required().max(1200) }),
+            defineField({ name: "missing", title: "Informații lipsă", type: "string", validation: (rule) => rule.required().max(1200) }),
+            defineField({ name: "next", title: "Următoarea acțiune", type: "string", validation: (rule) => rule.required().max(1200) }),
+            defineField({ name: "due", title: "Termen", type: "string", validation: (rule) => rule.required().max(1200) }),
+          ] }],
+        }),
+        defineField({
+          name: "faq", title: "Întrebări frecvente · 5 perechi", type: "array", validation: (rule) => rule.required().length(5),
+          fieldset: "services",
+          of: [{ type: "object", name: "faqItem", fields: [
+            defineField({ name: "question", title: "Întrebare", type: "string", validation: (rule) => rule.required().max(1200) }),
+            defineField({ name: "answer", title: "Răspuns", type: "text", rows: 4, validation: (rule) => rule.required().max(1200) }),
+          ] }],
+        }),
+        defineField({
           name: "processIntro", title: "Flux de lucru · introducere", type: "object",
           fieldset: "process",
           fields: [

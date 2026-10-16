@@ -1,3 +1,5 @@
+import { CANONICAL_SITE_URL, isPublicIndexingEnabled } from "./indexing-policy";
+
 const env = process.env;
 
 const configuredStage = env.DEPLOYMENT_STAGE?.trim().toLowerCase() || "live";
@@ -14,7 +16,7 @@ function isConfirmed(value: string | undefined): boolean {
 }
 
 const siteUrl = env.SITE_URL?.trim() || "https://santiersync.ro";
-const expectedOrigin = "https://santiersync.ro";
+const expectedOrigin = CANONICAL_SITE_URL;
 
 const legalValues = {
   operatorName: env.LEGAL_OPERATOR_NAME?.trim() ?? "",
@@ -60,6 +62,10 @@ const siteUrlIsConfirmed =
     }
   })();
 
+// Public indexing is intentionally independent from release and legal approval.
+// It exposes only the existing public pages on the canonical production host.
+const publicIndexingEnabled = isPublicIndexingEnabled(env);
+
 const legalReady =
   legalFieldsComplete &&
   siteUrlIsConfirmed &&
@@ -88,21 +94,18 @@ const fromEmail = env.CONTACT_FROM_EMAIL?.trim().toLowerCase() ?? "";
 const fromDomain = fromEmail.split("@").at(-1) ?? "";
 
 const contactConfigReady =
-  stageIsValid &&
-  deploymentStage === "live" &&
   isTrue(env.CONTACT_ENABLED) &&
   isTrue(env.NEXT_PUBLIC_CONTACT_ENABLED) &&
-  legalReady &&
-  Boolean(env.RESEND_API_KEY?.trim()) &&
-  Boolean(env.TURNSTILE_SECRET_KEY?.trim()) &&
-  Boolean(env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim()) &&
-  turnstileHostnames.length > 0 &&
+  isConfirmed(env.RESEND_API_KEY) &&
+  (isConfirmed(env.TURNSTILE_SECRET_KEY) &&
+    isConfirmed(env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) &&
+    turnstileHostnames.length > 0) &&
   (env.VERCEL_ENV !== "production" ||
-    (turnstileHostnames.includes("santiersync.ro") &&
-      isTrue(env.WAF_RATE_LIMIT_CONFIGURED) &&
+    (turnstileHostnames.length === 1 && turnstileHostnames[0] === "santiersync.ro" &&
+      originList.length === 1 && originList[0] === expectedOrigin &&
       isTrue(env.SENDER_DOMAIN_VERIFIED))) &&
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.CONTACT_TO_EMAIL ?? "") &&
-  /^[^\s@]+@(?:[a-z0-9-]+\.)*santiersync\.ro$/i.test(fromEmail) &&
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.CONTACT_TO_EMAIL ?? "") && isConfirmed(env.CONTACT_TO_EMAIL) &&
+  /^[^\s@]+@(?:[a-z0-9-]+\.)*santiersync\.ro$/i.test(fromEmail) && isConfirmed(env.CONTACT_FROM_EMAIL) &&
   (fromDomain === "santiersync.ro" || fromDomain.endsWith(".santiersync.ro")) &&
   originList.length > 0 &&
   originList.every((origin) => {
@@ -120,6 +123,8 @@ export const siteConfig = {
   location: "Cluj și împrejurimi",
   siteUrl,
   canonicalOrigin: expectedOrigin,
+  publicIndexingEnabled,
+  indexingReady: publicIndexingEnabled,
   deploymentStage,
   releaseReady,
   legalReady,
@@ -128,11 +133,11 @@ export const siteConfig = {
 } as const;
 
 export const siteMetadata = {
-  title: "ȘantierSync | Mai puțin haos. Mai multă treabă dusă la capăt.",
+  title: "ȘantierSync | Organizare și automatizare pentru construcții",
   description:
-    "Ajutăm firmele de construcții și instalații să-și pună în ordine cererile de ofertă și munca administrativă — folosind instrumentele pe care le au deja.",
-  openGraphTitle: "Mai puțin haos. Mai multă treabă dusă la capăt.",
+    "Organizare și automatizare pentru firme de construcții și instalații din Cluj și împrejurimi. Simplifică cererile de ofertă și munca administrativă.",
+  openGraphTitle: "Organizare pentru construcții, în Cluj",
   openGraphDescription:
-    "Organizare pentru munca din teren. Cluj și împrejurimi.",
+    "ȘantierSync ajută firmele de construcții și instalații din Cluj și împrejurimi să-și organizeze cererile și activitatea administrativă.",
 } as const;
 

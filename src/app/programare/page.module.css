@@ -1,5 +1,5 @@
 .page {
-  max-width: 900px;
+  max-width: 1060px;
   padding-top: clamp(42px, 7vw, 76px);
   padding-bottom: clamp(60px, 9vw, 108px);
 }
@@ -53,6 +53,11 @@
   color: var(--muted);
   font-size: 14px;
 }
+
+.preparation h2 { font-size: 24px; margin-bottom: 14px; }
+.preparation ol { padding-left: 23px; margin: 0 0 20px; }
+.preparation ol li { padding-left: 6px; margin-bottom: 8px; }
+.contactAlternative { margin-top: 24px; color: var(--muted); font-size: 16px; overflow-wrap: anywhere; }
 
 .disabled {
   padding: clamp(22px, 4vw, 34px);

@@ -11,6 +11,7 @@ studio
 coverage
 Backups
 *.bundle
+scripts/qa-*
 
 # Fișiere locale care pot conține chei, credențiale sau date temporare.
 *.pem

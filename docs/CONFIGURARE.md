@@ -11,7 +11,7 @@ Acest ghid este pentru proprietarul proiectului. Nu trimite parole sau tokenuri 
 
 ## Variabile și valori
 
-`.env.example` conține numele variabilelor și nu are secrete reale. Copiază-l în `.env.local` doar pentru dezvoltare. În Vercel setează separat valorile pentru fiecare mediu. Homepage-ul actual folosește un link `mailto:`; nu are formular și nu trimite email prin server. Variabilele `CONTACT_*`, Resend, Turnstile și WAF de mai jos sunt pentru endpointul API păstrat în repository pentru o integrare viitoare; acesta rămâne nelegat de homepage și dezactivat.
+`.env.example` conține numele variabilelor și nu are secrete reale. Copiază-l în `.env.local` doar pentru dezvoltare. În Vercel setează separat valorile pentru fiecare mediu. Homepage-ul are un formular care postează direct la endpointul contact API și afișează e-mailul public ca alternativă. Contactul API rămâne dezactivat în producție până când credențialele Resend și Turnstile și verificarea domeniului expeditor sunt completate și probate.
 
 | Variabilă | Scop și condiție |
 |---|---|
@@ -28,8 +28,8 @@ Acest ghid este pentru proprietarul proiectului. Nu trimite parole sau tokenuri 
 | `LEGAL_STORAGE_POLICY` | Tehnologiile și stocarea confirmate prin auditul implementării. |
 | `LEGAL_REVIEWED` | `true` după revizuirea informărilor față de operator și practica efectivă. |
 | `RELEASE_APPROVED` | `true` numai după verificările obligatorii și aprobarea explicită a proprietarului. |
-| `MAILBOX_TESTED` | Pentru varianta actuală: `true` după ce linkul deschide mesajul pregătit și proprietarul face o trimitere controlată, primită în inbox-ul real. |
-| `CONTACT_ENABLED`, `NEXT_PUBLIC_CONTACT_ENABLED` | Ambele rămân `false`. Nu le activa pentru homepage-ul actual. |
+| `MAILBOX_TESTED` | `true` numai după confirmarea adresei publice de e-mail și a unei trimiteri de probă făcute manual și primite în inbox-ul real. Un răspuns API de succes nu înlocuiește această probă. |
+| `CONTACT_ENABLED`, `NEXT_PUBLIC_CONTACT_ENABLED` | Ambele trebuie să fie `true` împreună cu credențialele și protecțiile configurate; până atunci lasă-le `false`. Gate-ul demo acceptă contactul doar dacă setările sunt complete; gate-ul live cere în continuare aprobările și verificările legale. |
 | `CONTACT_ALLOWED_ORIGINS` | Liste explicite de origins separate prin virgulă; în producție trebuie să fie numai `https://santiersync.ro`. Fără wildcard. |
 | `TURNSTILE_ALLOWED_HOSTNAMES` | Lista explicită de hostnames pentru widget; în producție trebuie să fie numai `santiersync.ro`. Fără wildcard, port sau scheme. |
 | `CONTACT_TO_EMAIL` | Destinatarul real al mesajelor; publicul cunoaște adresa inițială `santiersync@gmail.com`, dar livrarea și monitorizarea trebuie testate. |
@@ -37,13 +37,13 @@ Acest ghid este pentru proprietarul proiectului. Nu trimite parole sau tokenuri 
 | `RESEND_API_KEY` | Secret server-only pentru Resend. Creează chei separat pentru medii și respectă limitele curente din [Resend pricing](https://resend.com/pricing). |
 | `TURNSTILE_SECRET_KEY` | Secret server-only pentru Cloudflare Turnstile. |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cheia publică Turnstile; folosește widget și hostname configurate explicit. Vezi [Turnstile setup](https://developers.cloudflare.com/turnstile/get-started/). |
-| `WAF_RATE_LIMIT_CONFIGURED` | `true` numai după configurarea și verificarea unei reguli de limitare pentru endpointul de contact în Vercel WAF. |
+| `WAF_RATE_LIMIT_CONFIGURED` | Opțional: evidență pentru o regulă suplimentară în Vercel WAF. Aplicația nu cere acest flag pentru endpoint. |
 | `SENDER_DOMAIN_VERIFIED` | `true` numai după confirmarea domeniului expeditor în Resend. |
 
-Gate-ul actual de producție verifică HTTPS/canonical-ul, aprobările, identitatea și câmpurile juridice, precum și proba mailbox-ului prin `mailto:`. `LEGAL_REVIEWED` și `RELEASE_APPROVED` sunt aprobări umane, nu rezultate deduse de aplicație. Cheile, hostname-urile, verificarea domeniului Resend și limita WAF aparțin integrării API viitoare și nu se declară configurate acum.
+Gate-ul de producție verifică HTTPS/canonical-ul, aprobările, identitatea și câmpurile juridice, precum și proba mailbox-ului. `LEGAL_REVIEWED` și `RELEASE_APPROVED` sunt aprobări umane, nu rezultate deduse de aplicație. Pentru contactul API, configurează credențiale reale Resend și Turnstile, e-mailuri reale, originea exactă `https://santiersync.ro`, hostname-ul exact `santiersync.ro` și `SENDER_DOMAIN_VERIFIED=true` numai după verificarea expeditorului. WAF este o protecție suplimentară opțională, nu un gate al aplicației.
 
-În preview-ul actual, testează numai pregătirea mesajului `mailto:` și trimiterea controlată de către proprietar. Nu activează formularul API, Resend, Turnstile sau WAF pentru această versiune. Dacă integrarea API va fi aprobată separat, folosește un widget Turnstile separat cu hostname-ul preview exact, cheia secretă reală a widgetului și un mailbox de test dedicat. Cheile dummy pot întoarce hostname/action dummy și nu dovedesc fluxul real; nu slăbi și nu ocoli validarea hostname/action ca să le accepți.
+În preview, contactul API rămâne oprit până când există chei reale și hostname/origin exact configurate pentru acel mediu. Nu reutiliza cheile Production și nu accepta hostname-uri dummy: verificarea Turnstile cere acțiunea `contact` și hostname-ul aprobat. Pentru testarea unei livrări, folosește un inbox de test controlat. WAF poate fi configurat suplimentar, dar nu este necesar pentru endpoint.
 
 ## Costuri și rollback
 
-Brief-ul recomandă Vercel Pro pentru site comercial; prețurile și cotele se verifică direct în [documentația planului Pro](https://vercel.com/docs/plans/pro-plan). Dacă endpointul API va fi aprobat ulterior, recitește condițiile [Turnstile](https://developers.cloudflare.com/turnstile/plans/) și Resend înainte de activare. Setează alerte potrivite și păstrează ID-ul ultimului deployment verificat ca țintă de rollback. După rollback confirmă că pagina, legătura de email, metadatele și paginile legale corespund versiunii restaurate.
+Verifică prețurile și cotele curente pentru hosting și furnizorii integrați înainte de folosire comercială. Setează alerte potrivite și păstrează ID-ul ultimului deployment verificat ca țintă de rollback. După rollback confirmă că pagina, fallback-ul de e-mail, metadatele și paginile juridice corespund versiunii restaurate.
