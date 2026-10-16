@@ -51,7 +51,7 @@ const nextConfig: NextConfig = {
               `img-src 'self' data: blob: https://cdn.sanity.io https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://*.consentmanager.net`,
               `font-src 'self' data: https://*.consentmanager.net`,
               `connect-src 'self' https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://www.google.com https://*.consentmanager.net`,
-              `frame-src https://challenges.cloudflare.com https://*.consentmanager.net`,
+              `frame-src https://challenges.cloudflare.com https://*.consentmanager.net https://cal.com https://app.cal.com`,
               `base-uri 'self'`,
               `form-action 'self'`,
               `object-src 'none'`,

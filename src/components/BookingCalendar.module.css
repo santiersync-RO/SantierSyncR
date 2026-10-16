@@ -1,0 +1,67 @@
+.calendar {
+  min-width: 0;
+}
+
+.openButton {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 12px 20px;
+  border: 1px solid var(--orange);
+  color: var(--navy);
+  background: var(--orange);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.openButton:hover {
+  background: #ff8a48;
+}
+
+.frame {
+  display: block;
+  width: 100%;
+  height: min(760px, 78vh);
+  min-height: 620px;
+  border: 1px solid var(--border);
+  background: white;
+}
+
+.privacy,
+.externalLink,
+.fallback,
+.error {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.fallback a {
+  color: var(--navy);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.externalLink a {
+  color: var(--navy);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.error {
+  padding: 16px;
+  border-left: 2px solid var(--orange);
+  background: var(--pale);
+}
+
+@media (max-width: 767px) {
+  .frame {
+    height: 720px;
+    min-height: 560px;
+  }
+}

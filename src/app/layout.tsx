@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import SanityPreview from "@/components/SanityPreview";
 import AnalyticsCmp from "@/components/AnalyticsCmp";
 import { siteConfig } from "@/config/site";
+import { bookingConfig } from "@/config/booking";
 import { legalConfig } from "@/content/legal.ro";
 import { getDraftSiteContent, getSiteContent } from "@/lib/sanity.server";
 
@@ -122,7 +123,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         dangerouslySetInnerHTML={{ __html: cmpEnabled ? CONSENT_MANAGER_HEAD : "" }}
       />
       <body>
-        <Header navigation={content.home.navigation} logo={content.branding.logo} />
+        <Header navigation={content.home.navigation} logo={content.branding.logo} bookingEnabled={bookingConfig.enabled} />
         {children}
         <AnalyticsCmp
           enabled={cmpEnabled}
